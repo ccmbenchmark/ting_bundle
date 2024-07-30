@@ -25,73 +25,144 @@
 namespace CCMBenchmark\TingBundle\Validator\Constraints;
 
 use CCMBenchmark\Ting\Repository\RepositoryFactory;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-/**
- * UniqueEntityValidator
- */
-class UniqueEntityValidator extends ConstraintValidator
-{
+if (Kernel::VERSION_ID >= 60000) {
     /**
-     * @var RepositoryFactory
+     * UniqueEntityValidator
      */
-    private $repositoryFactory;
-
-    /**
-     * UniqueEntityValidator constructor.
-     *
-     * @param RepositoryFactory $repositoryFactory
-     */
-    public function __construct(RepositoryFactory $repositoryFactory)
+    class UniqueEntityValidator extends ConstraintValidator
     {
-        $this->repositoryFactory = $repositoryFactory;
-    }
+        /**
+         * @var RepositoryFactory
+         */
+        private $repositoryFactory;
 
-    /**
-     * @param mixed      $entity
-     * @param Constraint $constraint
-     *
-     * @throws UnexpectedTypeException
-     */
-    public function validate($entity, Constraint $constraint)
-    {
-        if (!$constraint instanceof UniqueEntity) {
-            throw new UnexpectedTypeException($constraint, UniqueEntity::class);
+        /**
+         * UniqueEntityValidator constructor.
+         *
+         * @param RepositoryFactory $repositoryFactory
+         */
+        public function __construct(RepositoryFactory $repositoryFactory)
+        {
+            $this->repositoryFactory = $repositoryFactory;
         }
 
-        $repository = $this->repositoryFactory->get($constraint->repository);
+        /**
+         * @param mixed      $value
+         * @param Constraint $constraint
+         *
+         * @throws UnexpectedTypeException
+         */
+        public function validate(mixed $value, Constraint $constraint)
+        {
+            if (!$constraint instanceof UniqueEntity) {
+                throw new UnexpectedTypeException($constraint, UniqueEntity::class);
+            }
 
-        $metadata = $repository->getMetadata();
+            $repository = $this->repositoryFactory->get($constraint->repository);
 
-        $criteria = [];
-        $fields  = (array) $constraint->fields;
+            $metadata = $repository->getMetadata();
 
-        foreach ($fields as $field) {
-            $getter = $metadata->getGetter($field);
-            $criteria[$field] = $entity->$getter();
-        }
+            $criteria = [];
+            $fields = (array)$constraint->fields;
 
-        $myEntity = $repository->getOneBy($criteria);
+            foreach ($fields as $field) {
+                $getter = $metadata->getGetter($field);
+                $criteria[$field] = $value->$getter();
+            }
 
-        if ($myEntity !== null) {
-            $validationFailed = true;
-            $identityFields = (array) $constraint->identityFields;
-            if ($identityFields !== []) {
-                $validationFailed = false;
-                foreach ($identityFields as $identityField) {
-                    $getter = $metadata->getGetter($identityField);
-                    if ($entity->$getter() !== $myEntity->$getter()) {
-                        $validationFailed = true;
-                        break;
+            $myEntity = $repository->getOneBy($criteria);
+
+            if ($myEntity !== null) {
+                $validationFailed = true;
+                $identityFields = (array)$constraint->identityFields;
+                if ($identityFields !== []) {
+                    $validationFailed = false;
+                    foreach ($identityFields as $identityField) {
+                        $getter = $metadata->getGetter($identityField);
+                        if ($value->$getter() !== $myEntity->$getter()) {
+                            $validationFailed = true;
+                            break;
+                        }
                     }
                 }
+                if ($validationFailed === true) {
+                    $this->context->buildViolation($constraint->message)
+                                  ->setParameter('{{ data }}', implode(', ', $criteria))
+                                  ->addViolation();
+                }
             }
-            if ($validationFailed === true) {
-                $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ data }}', implode(', ', $criteria))
-                    ->addViolation();
+        }
+    }
+} else {
+    /**
+     * UniqueEntityValidator
+     */
+    class UniqueEntityValidator extends ConstraintValidator
+    {
+        /**
+         * @var RepositoryFactory
+         */
+        private $repositoryFactory;
+
+        /**
+         * UniqueEntityValidator constructor.
+         *
+         * @param RepositoryFactory $repositoryFactory
+         */
+        public function __construct(RepositoryFactory $repositoryFactory)
+        {
+            $this->repositoryFactory = $repositoryFactory;
+        }
+
+        /**
+         * @param mixed      $value
+         * @param Constraint $constraint
+         *
+         * @throws UnexpectedTypeException
+         */
+        public function validate($value, Constraint $constraint)
+        {
+            if (!$constraint instanceof UniqueEntity) {
+                throw new UnexpectedTypeException($constraint, UniqueEntity::class);
+            }
+
+            $repository = $this->repositoryFactory->get($constraint->repository);
+
+            $metadata = $repository->getMetadata();
+
+            $criteria = [];
+            $fields = (array)$constraint->fields;
+
+            foreach ($fields as $field) {
+                $getter = $metadata->getGetter($field);
+                $criteria[$field] = $value->$getter();
+            }
+
+            $myEntity = $repository->getOneBy($criteria);
+
+            if ($myEntity !== null) {
+                $validationFailed = true;
+                $identityFields = (array)$constraint->identityFields;
+                if ($identityFields !== []) {
+                    $validationFailed = false;
+                    foreach ($identityFields as $identityField) {
+                        $getter = $metadata->getGetter($identityField);
+                        if ($value->$getter() !== $myEntity->$getter()) {
+                            $validationFailed = true;
+                            break;
+                        }
+                    }
+                }
+                if ($validationFailed === true) {
+                    $this->context->buildViolation($constraint->message)
+                                  ->setParameter('{{ data }}', implode(', ', $criteria))
+                                  ->addViolation();
+                }
             }
         }
     }
