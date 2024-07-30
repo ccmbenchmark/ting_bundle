@@ -59,8 +59,8 @@ class UniqueEntity extends \atoum
         $this
             ->if($mockUniqueEntity = new \mock\CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity())
             ->then
-                ->array($mockUniqueEntity->getDefaultOption())
-                    ->isIdenticalTo(['fields', 'repository'])
+                ->variable($mockUniqueEntity->getDefaultOption())
+                    ->isIdenticalTo(null)
         ;
     }
 }
