@@ -69,12 +69,4 @@ class UniqueEntity extends Constraint
     {
         return ['fields', 'repository'];
     }
-
-    /**
-     * @return array
-     */
-    public function getDefaultOption()
-    {
-        return ['fields', 'repository'];
-    }
 }
