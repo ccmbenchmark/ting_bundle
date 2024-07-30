@@ -12,17 +12,12 @@ jobs:
     strategy:
       matrix:
         php:
-          - 7.2
-          - 7.3
-          - 7.4
-          - 8.0
-          - 8.1
           - 8.2
+          - 8.3
         deps:
           - highest
           - lowest
         composer:
-          - v1
           - v2
     name: Unit tests (PHP ${{ matrix.php }}, composer ${{ matrix.composer }}, ${{ matrix.deps }} dependencies)
     steps:
