@@ -24,49 +24,97 @@
 
 namespace CCMBenchmark\TingBundle\Validator\Constraints;
 
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * Class UniqueEntity
- *
- * @Annotation
- * @Target({"CLASS", "ANNOTATION"})
- */
-class UniqueEntity extends Constraint
-{
+if (Kernel::VERSION_ID >= 70000) {
     /**
-     * @var string
+     * Class UniqueEntity
+     *
+     * @Annotation
+     * @Target({"CLASS", "ANNOTATION"})
      */
-    public $message = 'Another entity exists for this data: {{ data }}';
-
-    /**
-     * @var string
-     */
-    public $repository;
-
-    /**
-     * @var array
-     */
-    public $fields = array();
-
-    /**
-     * @var array
-     */
-    public $identityFields = array();
-
-    /**
-     * @return string
-     */
-    public function getTargets()
+    class UniqueEntity extends Constraint
     {
-        return self::CLASS_CONSTRAINT;
+        /**
+         * @var string
+         */
+        public $message = 'Another entity exists for this data: {{ data }}';
+
+        /**
+         * @var string
+         */
+        public $repository;
+
+        /**
+         * @var array
+         */
+        public $fields = array();
+
+        /**
+         * @var array
+         */
+        public $identityFields = array();
+
+        /**
+         * @return string
+         */
+        public function getTargets(): string|array
+        {
+            return self::CLASS_CONSTRAINT;
+        }
+
+        /**
+         * @return array
+         */
+        public function getRequiredOptions(): array
+        {
+            return ['fields', 'repository'];
+        }
     }
-
+} else {
     /**
-     * @return array
+     * Class UniqueEntity
+     *
+     * @Annotation
+     * @Target({"CLASS", "ANNOTATION"})
      */
-    public function getRequiredOptions()
+    class UniqueEntity extends Constraint
     {
-        return ['fields', 'repository'];
+        /**
+         * @var string
+         */
+        public $message = 'Another entity exists for this data: {{ data }}';
+
+        /**
+         * @var string
+         */
+        public $repository;
+
+        /**
+         * @var array
+         */
+        public $fields = array();
+
+        /**
+         * @var array
+         */
+        public $identityFields = array();
+
+        /**
+         * @return string
+         */
+        public function getTargets()
+        {
+            return self::CLASS_CONSTRAINT;
+        }
+
+        /**
+         * @return array
+         */
+        public function getRequiredOptions()
+        {
+            return ['fields', 'repository'];
+        }
     }
 }
