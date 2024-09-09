@@ -29,110 +29,221 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\VarDumper\Cloner\Data;
 
-class TingCacheDataCollector extends DataCollector implements LateDataCollectorInterface
-{
-    /**
-     * @var CacheLoggerInterface|null
-     */
-    protected $cacheLogger  = null;
-
-    protected $data = [];
-
-    public function __construct()
+if (Kernel::VERSION_ID >= 70000) {
+    class TingCacheDataCollector extends DataCollector implements LateDataCollectorInterface
     {
-        $this->init();
-    }
+        /**
+         * @var CacheLoggerInterface|null
+         */
+        protected $cacheLogger  = null;
 
-    /**
-     * Collects data for the given Request and Response.
-     *
-     * @param Request    $request A Request instance
-     * @param Response   $response A Response instance
-     * @param \Throwable $exception An Exception instance
-     *
-     * @api
-     */
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
-    {
-        if ($this->cacheLogger !== null) {
-            $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
-            $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
-            $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
-            $this->data['cache']['hits'] = $this->cacheLogger->getHits();
-            $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+        protected Data|array $data = [];
+
+        public function __construct()
+        {
+            $this->init();
+        }
+
+        /**
+         * Collects data for the given Request and Response.
+         *
+         * @param Request    $request A Request instance
+         * @param Response   $response A Response instance
+         * @param \Throwable $exception An Exception instance
+         *
+         * @api
+         */
+        public function collect(Request $request, Response $response, \Throwable $exception = null)
+        {
+            if ($this->cacheLogger !== null) {
+                $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+                $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
+                $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
+                $this->data['cache']['hits'] = $this->cacheLogger->getHits();
+                $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+            }
+        }
+
+        public function lateCollect()
+        {
+            if ($this->cacheLogger !== null) {
+                $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+                $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
+                $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
+                $this->data['cache']['hits'] = $this->cacheLogger->getHits();
+                $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+            }
+        }
+
+        /**
+         * Returns the name of the collector.
+         *
+         * @return string The collector name
+         *
+         * @api
+         */
+        public function getName()
+        {
+            return 'ting.cache';
+        }
+
+        public function setCacheLogger(CacheLoggerInterface $cacheLogger = null)
+        {
+            $this->cacheLogger = $cacheLogger;
+        }
+
+        public function getOperations()
+        {
+            return $this->data['cache']['operations'];
+        }
+
+        public function getCacheOperationsCount()
+        {
+            return $this->data['cache']['operationsCount'];
+        }
+
+        public function getCacheTotalTime()
+        {
+            return $this->data['cache']['time'];
+        }
+
+        public function getHits()
+        {
+            return $this->data['cache']['hits'];
+        }
+
+        public function getMiss()
+        {
+            return $this->data['cache']['miss'];
+        }
+
+        public function reset()
+        {
+            $this->init();
+        }
+
+        private function init()
+        {
+            $this->data = [
+                'driver' => [
+                    'queries'               => [],
+                    'execs'                 => [],
+                    'queryCount'            => 0,
+                    'time'                  => 0,
+                    'connections'           => [],
+                    'connectionsHashToName' => []
+                ]
+            ];
         }
     }
-
-    public function lateCollect()
+} else {
+    class TingCacheDataCollector extends DataCollector implements LateDataCollectorInterface
     {
-        if ($this->cacheLogger !== null) {
-            $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
-            $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
-            $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
-            $this->data['cache']['hits'] = $this->cacheLogger->getHits();
-            $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+        /**
+         * @var CacheLoggerInterface|null
+         */
+        protected $cacheLogger  = null;
+
+        protected $data = [];
+
+        public function __construct()
+        {
+            $this->init();
         }
-    }
 
-    /**
-     * Returns the name of the collector.
-     *
-     * @return string The collector name
-     *
-     * @api
-     */
-    public function getName()
-    {
-        return 'ting.cache';
-    }
+        /**
+         * Collects data for the given Request and Response.
+         *
+         * @param Request    $request A Request instance
+         * @param Response   $response A Response instance
+         * @param \Throwable $exception An Exception instance
+         *
+         * @api
+         */
+        public function collect(Request $request, Response $response, \Throwable $exception = null)
+        {
+            if ($this->cacheLogger !== null) {
+                $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+                $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
+                $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
+                $this->data['cache']['hits'] = $this->cacheLogger->getHits();
+                $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+            }
+        }
 
-    public function setCacheLogger(CacheLoggerInterface $cacheLogger = null)
-    {
-        $this->cacheLogger = $cacheLogger;
-    }
+        public function lateCollect()
+        {
+            if ($this->cacheLogger !== null) {
+                $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+                $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
+                $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
+                $this->data['cache']['hits'] = $this->cacheLogger->getHits();
+                $this->data['cache']['miss'] = $this->cacheLogger->getMiss();
+            }
+        }
 
-    public function getOperations()
-    {
-        return $this->data['cache']['operations'];
-    }
+        /**
+         * Returns the name of the collector.
+         *
+         * @return string The collector name
+         *
+         * @api
+         */
+        public function getName()
+        {
+            return 'ting.cache';
+        }
 
-    public function getCacheOperationsCount()
-    {
-        return $this->data['cache']['operationsCount'];
-    }
+        public function setCacheLogger(CacheLoggerInterface $cacheLogger = null)
+        {
+            $this->cacheLogger = $cacheLogger;
+        }
 
-    public function getCacheTotalTime()
-    {
-        return $this->data['cache']['time'];
-    }
+        public function getOperations()
+        {
+            return $this->data['cache']['operations'];
+        }
 
-    public function getHits()
-    {
-        return $this->data['cache']['hits'];
-    }
+        public function getCacheOperationsCount()
+        {
+            return $this->data['cache']['operationsCount'];
+        }
 
-    public function getMiss()
-    {
-        return $this->data['cache']['miss'];
-    }
+        public function getCacheTotalTime()
+        {
+            return $this->data['cache']['time'];
+        }
 
-    public function reset()
-    {
-        $this->init();
-    }
+        public function getHits()
+        {
+            return $this->data['cache']['hits'];
+        }
 
-    private function init()
-    {
-        $this->data = [
-            'driver' => [
-                'queries'               => [],
-                'execs'                 => [],
-                'queryCount'            => 0,
-                'time'                  => 0,
-                'connections'           => [],
-                'connectionsHashToName' => []
-            ]
-        ];
+        public function getMiss()
+        {
+            return $this->data['cache']['miss'];
+        }
+
+        public function reset()
+        {
+            $this->init();
+        }
+
+        private function init()
+        {
+            $this->data = [
+                'driver' => [
+                    'queries'               => [],
+                    'execs'                 => [],
+                    'queryCount'            => 0,
+                    'time'                  => 0,
+                    'connections'           => [],
+                    'connectionsHashToName' => []
+                ]
+            ];
+        }
     }
 }
