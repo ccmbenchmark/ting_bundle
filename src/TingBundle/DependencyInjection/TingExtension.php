@@ -35,7 +35,7 @@ use Symfony\Component\Config\FileLocator;
 
 class TingExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $xmlLoader->load('services.xml');

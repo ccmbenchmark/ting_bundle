@@ -37,8 +37,6 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
      */
     protected $driverLogger = null;
 
-    protected $data = [];
-
     public function __construct()
     {
         $this->init();
@@ -53,7 +51,7 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
      *
      * @api
      */
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null): void
     {
         if ($this->driverLogger !== null) {
             $this->data['driver']['queries'] = $this->driverLogger->getQueries();
@@ -75,7 +73,7 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
         }
     }
 
-    public function lateCollect()
+    public function lateCollect(): void
     {
         if ($this->driverLogger !== null) {
             $this->data['driver']['queries'] = $this->driverLogger->getQueries();
@@ -144,7 +142,7 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
         return $this->data['driver']['connectionsHashToName'];
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->init();
     }

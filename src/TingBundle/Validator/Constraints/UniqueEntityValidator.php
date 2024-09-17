@@ -55,7 +55,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @throws UnexpectedTypeException
      */
-    public function validate($entity, Constraint $constraint)
+    public function validate($entity, Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueEntity) {
             throw new UnexpectedTypeException($constraint, UniqueEntity::class);
