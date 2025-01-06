@@ -46,7 +46,7 @@ class RepositoryFactory extends \CCMBenchmark\Ting\Repository\RepositoryFactory
         $cacheFile,
         array $repositories,
         FileLocator $fileLocator,
-        ConfigurationResolverInterface $configurationResolver = null
+        ?ConfigurationResolverInterface $configurationResolver = null
     ) {
         if ($this->metadataLoaded === true) {
             return;

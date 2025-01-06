@@ -74,7 +74,7 @@ class DriverLogger implements DriverLoggerInterface
      */
     protected $totalTime = 0;
 
-    public function __construct(LoggerInterface $logger = null, Stopwatch $stopwatch = null)
+    public function __construct(?LoggerInterface $logger = null, ?Stopwatch $stopwatch = null)
     {
         $this->logger = $logger;
         $this->stopwatch = $stopwatch;

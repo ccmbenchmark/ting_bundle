@@ -15,7 +15,7 @@ class MetadataClearer implements CacheClearerInterface
     /** @var string */
     private $cacheFile;
 
-    public function __construct(string $cacheFile, Filesystem $filesystem = null)
+    public function __construct(string $cacheFile, ?Filesystem $filesystem = null)
     {
         $this->cacheFile = $cacheFile;
         $this->fileSystem = $filesystem ?: new Filesystem();
