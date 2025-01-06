@@ -1,4 +1,8 @@
-3.8.0 (2015-01-06):
+3.8.1 (2025-01-06):
+    * PHP 8.4: Implicit nullable parameters are now deprecated
+    * Add return type matching SF 7 deprecation
+
+3.8.0 (2025-01-06):
     * Drop support for PHP < 8.1
     * Allow SF 7
     * Feature: add PHP attributes for metadata declaration

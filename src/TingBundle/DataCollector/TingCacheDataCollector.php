@@ -54,7 +54,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
      *
      * @api
      */
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
         if ($this->cacheLogger !== null) {
             $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
@@ -65,7 +65,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
         }
     }
 
-    public function lateCollect()
+    public function lateCollect(): void
     {
         if ($this->cacheLogger !== null) {
             $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
@@ -88,7 +88,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
         return 'ting.cache';
     }
 
-    public function setCacheLogger(CacheLoggerInterface $cacheLogger = null)
+    public function setCacheLogger(?CacheLoggerInterface $cacheLogger = null)
     {
         $this->cacheLogger = $cacheLogger;
     }
@@ -118,7 +118,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
         return $this->data['cache']['miss'];
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->init();
     }
