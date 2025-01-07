@@ -111,12 +111,7 @@
             <tag name="controller.argument_value_resolver" priority="110" />
             <argument type="service" id="ting.metadatarepository" />
             <argument type="service" id="ting" />
-            <argument type="service" id="Symfony\Component\ExpressionLanguage\ExpressionLanguage" on-invalid="null" /><!--
-            private MetadataRepository $metadataRepository,
-            private RepositoryFactory $repositoryFactory,
-            private ?ExpressionLanguage $expressionLanguage = null,
-            private MapEntity $defaults = new MapEntity(),-->
-
+            <argument type="service" id="Symfony\Component\ExpressionLanguage\ExpressionLanguage" on-invalid="null" />
         </service>
     </services>
 </container>

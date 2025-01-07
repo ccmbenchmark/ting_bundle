@@ -10,11 +10,15 @@ use CCMBenchmark\Ting\Repository\Hydrator;
 use CCMBenchmark\Ting\Serializer\SerializerFactory;
 use CCMBenchmark\Ting\UnitOfWork;
 use CCMBenchmark\TingBundle\Attribute\MapEntity;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @tags SF
+ */
 class EntityValueResolver extends atoum
 {
     private $metadataRepository;
@@ -49,6 +53,9 @@ class EntityValueResolver extends atoum
 
     public function testReturnsEmptyArrayWhenArgumentIsAlreadyObject(): void
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($request = new Request(['argumentName' => new \stdClass()]))
             ->and($argument = new ArgumentMetadata('argumentName', null, false, false, null))
@@ -62,6 +69,9 @@ class EntityValueResolver extends atoum
 
     public function testReturnsEmptyArrayWhenMapEntityIsDisabled(): void
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', disabled: true))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))
@@ -76,6 +86,9 @@ class EntityValueResolver extends atoum
     
     public function testWithRouteMapping(): void
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($argumentCity = $this->createArgumentMetadataForAttributes(new MapEntity(class: 'City'), 'city'))
             ->and($argumentCountry = $this->createArgumentMetadataForAttributes(new MapEntity(class: 'Country'), 'country'))
@@ -105,6 +118,9 @@ class EntityValueResolver extends atoum
 
     public function testThrowsNotFoundHttpExceptionWhenObjectCannotBeFound(): void
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $simpleRepository = new \mock\tests\fixtures\SimpleRepository();
         $this->calling($simpleRepository)->get = null;
         $this
@@ -125,6 +141,9 @@ class EntityValueResolver extends atoum
 
     public function testReturnsObjectWhenFoundInRepository()
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', id: 'id'))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))
@@ -144,6 +163,9 @@ class EntityValueResolver extends atoum
 
     public function testEvaluatesExpressionWhenProvided()
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', expr: 'repository.find(id)'))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))
@@ -163,6 +185,9 @@ class EntityValueResolver extends atoum
     
     public function testExpressionFailureReturns404()
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', expr: 'repository.find(id)'))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))
@@ -180,6 +205,9 @@ class EntityValueResolver extends atoum
 
     public function testReturnsEmptyArrayWhenCriteriaCannotBeDetermined()
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', mapping: []))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))
@@ -198,6 +226,9 @@ class EntityValueResolver extends atoum
     
     public function testReturnsObjectWhenCriteriaCanBeDetermined()
     {
+        if (!interface_exists(ValueResolverInterface::class) || !class_exists(ValueResolver::class)) {
+            return;
+        }
         $this
             ->given($mapEntity = new MapEntity(class: 'TestEntity', mapping: ['name' => 'name', 'id' => 'id']))
             ->and($argument = $this->createArgumentMetadataForAttributes($mapEntity))

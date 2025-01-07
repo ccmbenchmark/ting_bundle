@@ -32,15 +32,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class TingExtension extends \atoum
 {
-    public function testEmpty()
-    {
-        // Minimum test to ensure code execution
-        $this
-            ->if($containerBuilder = new ContainerBuilder(new ParameterBag(['kernel.debug' => false])))
-            ->then($this->newTestedInstance->load([], $containerBuilder))
-        ;
-    }
-    
     public function testAutoConfigurationWithAttributes()
     {
         $fixtureInstance = new Definition(EntityWithAttributes::class);
@@ -84,6 +75,17 @@ class TingExtension extends \atoum
                     ['addField', [['fieldName' => 'json', 'columnName' => 'json', 'type' => 'json']]],
                     ['addField', [['fieldName' => 'point', 'columnName' => 'point', 'type' => 'geometry']]],
                 ])
+        ;
+    }
+    
+    public function testContainerShouldDeclareValueResolverIfAvailable()
+    {
+        $this
+            ->if($containerBuilder = new ContainerBuilder(new ParameterBag(['kernel.debug' => false])))
+            ->then($this->newTestedInstance->load([], $containerBuilder))
+            ->and($shouldBeDeclared = interface_exists(ValueResolverInterface::class) && class_exists(ValueResolver::class))
+                ->boolean($containerBuilder->hasDefinition('ting.argumentvalueresolver'))
+                    ->isEqualTo($shouldBeDeclared)
         ;
     }
 }

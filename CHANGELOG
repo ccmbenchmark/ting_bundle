@@ -1,5 +1,5 @@
 3.9.0 (unreleased):
-    * Feature: Supports automatic value resolving in controllers (with or without MapEntity), see [https://github.com/symfony/symfony/blob/7.2/src/Symfony/Bridge/Doctrine/ArgumentResolver/EntityValueResolver.php](Doctrine Bridge)
+    * Feature: (SF6.2+) Supports automatic value resolving in controllers (with or without MapEntity), see [https://github.com/symfony/symfony/blob/7.2/src/Symfony/Bridge/Doctrine/ArgumentResolver/EntityValueResolver.php](Doctrine Bridge)
 
 3.8.1 (2025-01-06):
     * PHP 8.4: Implicit nullable parameters are now deprecated
