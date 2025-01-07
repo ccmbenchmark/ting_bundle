@@ -17,7 +17,7 @@
         "atoum/atoum": "^4.2",
         "atoum/stubs": "^2.2",
         "brick/geo": ">=0.5 <=1.0",
-        "symfony/expression-language": "^7.2"
+        "symfony/expression-language": "^6.3 || ^7.2"
     },
     "autoload": {
         "psr-4" : {
