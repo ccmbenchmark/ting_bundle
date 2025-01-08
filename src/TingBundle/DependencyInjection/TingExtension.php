@@ -169,6 +169,8 @@ class TingExtension extends Extension
 
             if (is_subclass_of($property->getType()->getName(), '\Brick\Geo\Geometry')) {
                 $newField['type'] = 'geometry';
+            } elseif (is_subclass_of($property->getType()->getName(), Uuid::class)) {
+                $newField['type'] = 'uuid';
             } else {
                 $newField['type'] = match ($property->getType()->getName()) {
                     'string' => 'string',

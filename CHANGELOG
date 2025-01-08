@@ -1,3 +1,6 @@
+3.8.2 (unreleased):
+    * Fix: better detection for Uuid subclasses in autowiring
+
 3.8.1 (2025-01-06):
     * PHP 8.4: Implicit nullable parameters are now deprecated
     * Add return type matching SF 7 deprecation

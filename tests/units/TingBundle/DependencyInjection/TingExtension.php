@@ -83,6 +83,8 @@ class TingExtension extends \atoum
                     ['addField', [['fieldName' => 'timeZone', 'columnName' => 'time_zone', 'type' => 'datetimezone']]],
                     ['addField', [['fieldName' => 'json', 'columnName' => 'json', 'type' => 'json']]],
                     ['addField', [['fieldName' => 'point', 'columnName' => 'point', 'type' => 'geometry']]],
+                    ['addField', [['fieldName' => 'genericUuid', 'columnName' => 'generic_uuid', 'type' => 'uuid']]],
+                    ['addField', [['fieldName' => 'uuidV4', 'columnName' => 'uuid_v4', 'type' => 'uuid']]],
                 ])
         ;
     }
