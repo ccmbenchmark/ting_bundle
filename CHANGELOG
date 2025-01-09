@@ -1,4 +1,4 @@
-3.8.2 (unreleased):
+3.8.2 (2025-01-09):
     * Fix: better detection for Uuid subclasses in autowiring
 
 3.8.1 (2025-01-06):
