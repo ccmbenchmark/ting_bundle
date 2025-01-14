@@ -210,6 +210,9 @@ class TingExtension extends Extension
             if ($mappingAttribute->getArguments()['serializer'] ?? false) {
                 $newField['serializer'] = $mappingAttribute->getArguments()['serializer'];
             }
+            if ($mappingAttribute->getArguments()['serializerOptions'] ?? false) {
+                $newField['serializer_options'] = $mappingAttribute->getArguments()['serializerOptions'];
+            }
 
             $newMetadata->addMethodCall('addField', [$newField]);
         }
