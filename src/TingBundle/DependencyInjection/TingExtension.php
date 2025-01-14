@@ -38,6 +38,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -134,17 +135,22 @@ class TingExtension extends Extension
         }
 
         if (interface_exists(ValueResolverInterface::class) && class_exists(ValueResolver::class)) {
+            if (class_exists(ExpressionLanguage::class)) {
+                $definition = new Definition(ExpressionLanguage::class);
+                $definition->addArgument(new Reference('cache.app'));
+                $container->setDefinition('ting.expression_language', $definition);
+            }
+            
             $definition = new Definition(EntityValueResolver::class);
-
             $definition->setArguments([
                 new Reference('ting.metadatarepository'),
                 new Reference('ting'),
-                (new Reference('Symfony\Component\ExpressionLanguage\ExpressionLanguage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+                new Reference('ting.expression_language', ContainerInterface::NULL_ON_INVALID_REFERENCE)
             ]);
 
             $definition->addTag('controller.argument_value_resolver', ['priority' => 110]);
 
-            $container->setDefinition('ting.entity_value_resolver', $definition);
+            $container->setDefinition(EntityValueResolver::class, $definition);
         }
     }
 
