@@ -5,6 +5,8 @@ namespace tests\fixtures;
 use Brick\Geo\Point;
 use CCMBenchmark\TingBundle\Schema\Column;
 use CCMBenchmark\TingBundle\Schema\Table;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 #[Table('entity_with_attributes', 'default', 'default', 'default')]
 class EntityWithAttributes
@@ -32,4 +34,10 @@ class EntityWithAttributes
     
     #[Column]
     public Point $point;
+    
+    #[Column]
+    public Uuid $genericUuid;
+    
+    #[Column]
+    public UuidV4 $uuidV4;
 }
