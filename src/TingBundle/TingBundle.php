@@ -24,9 +24,20 @@
 
 namespace CCMBenchmark\TingBundle;
 
+use CCMBenchmark\TingBundle\DependencyInjection\EntityFactory;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class TingBundle extends Bundle
 {
     public const VERSION = '3.8';
+
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+        
+        if ($container->hasExtension('security')) {
+            $container->getExtension('security')->addUserProviderFactory(new EntityFactory());
+        }
+    }
 }

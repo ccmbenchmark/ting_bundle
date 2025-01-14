@@ -106,12 +106,10 @@
             <argument type="service" id="ting" />
             <tag name="validator.constraint_validator" />
         </service>
-        
-        <service id="ting.entity_value_resolver" class="CCMBenchmark\TingBundle\ArgumentResolver\EntityValueResolver">
-            <tag name="controller.argument_value_resolver" priority="110" />
+
+        <service id="ting.security.user_provider" abstract="true" class="CCMBenchmark\TingBundle\Security\EntityUserProvider">
             <argument type="service" id="ting.metadatarepository" />
             <argument type="service" id="ting" />
-            <argument type="service" id="Symfony\Component\ExpressionLanguage\ExpressionLanguage" on-invalid="null" />
         </service>
     </services>
 </container>
