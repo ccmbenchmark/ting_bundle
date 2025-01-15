@@ -1,3 +1,6 @@
+3.9.0 (unreleased):
+    * The constraint "UniqueEntity" can now be used with an attribute on your class
+
 3.8.2 (2025-01-09):
     * Fix: better detection for Uuid subclasses in autowiring
 

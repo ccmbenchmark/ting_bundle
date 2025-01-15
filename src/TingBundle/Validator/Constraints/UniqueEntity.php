@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraint;
  * @Annotation
  * @Target({"CLASS", "ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class UniqueEntity extends Constraint
 {
     /**
