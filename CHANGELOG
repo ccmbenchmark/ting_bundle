@@ -1,3 +1,7 @@
+3.9.0 (unreleased):
+    * Feature: (SF6.2+) Supports automatic value resolving in controllers (with or without MapEntity), see [https://github.com/symfony/symfony/blob/7.2/src/Symfony/Bridge/Doctrine/ArgumentResolver/EntityValueResolver.php](Doctrine Bridge)
+    * Feature: supports serializer options in attributes
+
 3.8.2 (2025-01-09):
     * Fix: better detection for Uuid subclasses in autowiring
 

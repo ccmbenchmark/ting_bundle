@@ -25,6 +25,7 @@
 namespace CCMBenchmark\TingBundle\DependencyInjection;
 
 use CCMBenchmark\Ting\Repository\Metadata;
+use CCMBenchmark\TingBundle\ArgumentResolver\EntityValueResolver;
 use CCMBenchmark\TingBundle\Schema\Column;
 use CCMBenchmark\TingBundle\Schema\Table;
 use Doctrine\Common\Cache\VoidCache;
@@ -37,6 +38,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Uid\Uuid;
@@ -129,6 +133,25 @@ class TingExtension extends Extension
             $definition = $container->getDefinition('ting.cache_data_collector');
             $definition->addMethodCall('setCacheLogger', [$reference]);
         }
+
+        if (interface_exists(ValueResolverInterface::class) && class_exists(ValueResolver::class)) {
+            if (class_exists(ExpressionLanguage::class)) {
+                $definition = new Definition(ExpressionLanguage::class);
+                $definition->addArgument(new Reference('cache.app'));
+                $container->setDefinition('ting.expression_language', $definition);
+            }
+            
+            $definition = new Definition(EntityValueResolver::class);
+            $definition->setArguments([
+                new Reference('ting.metadatarepository'),
+                new Reference('ting'),
+                new Reference('ting.expression_language', ContainerInterface::NULL_ON_INVALID_REFERENCE)
+            ]);
+
+            $definition->addTag('controller.argument_value_resolver', ['priority' => 110]);
+
+            $container->setDefinition(EntityValueResolver::class, $definition);
+        }
     }
 
     /**
@@ -188,6 +211,9 @@ class TingExtension extends Extension
 
             if ($mappingAttribute->getArguments()['serializer'] ?? false) {
                 $newField['serializer'] = $mappingAttribute->getArguments()['serializer'];
+            }
+            if ($mappingAttribute->getArguments()['serializerOptions'] ?? false) {
+                $newField['serializer_options'] = $mappingAttribute->getArguments()['serializerOptions'];
             }
 
             $newMetadata->addMethodCall('addField', [$newField]);

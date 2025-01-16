@@ -1,6 +1,6 @@
 <?php
 
-namespace ccmbenchmark\ting_bundle\tests\fixtures;
+namespace tests\fixtures;
 
 use CCMBenchmark\Ting\Repository\Repository;
 
