@@ -32,15 +32,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class TingExtension extends \atoum
 {
-    public function testEmpty()
-    {
-        // Minimum test to ensure code execution
-        $this
-            ->if($containerBuilder = new ContainerBuilder(new ParameterBag(['kernel.debug' => false])))
-            ->then($this->newTestedInstance->load([], $containerBuilder))
-        ;
-    }
-    
     public function testAutoConfigurationWithAttributes()
     {
         $fixtureInstance = new Definition(EntityWithAttributes::class);
@@ -78,7 +69,7 @@ class TingExtension extends \atoum
                     ],
                     ['addField', [['fieldName' => 'fieldWithSpecifiedColumnName', 'columnName' => 'field', 'type' => 'string']]],
                     ['addField', [['fieldName' => 'fieldAsCamelCase', 'columnName' => 'field_as_camel_case', 'type' => 'string']]],
-                    ['addField', [['fieldName' => 'dateImmutable', 'columnName' => 'date_immutable', 'type' => 'datetime_immutable']]],
+                    ['addField', [['fieldName' => 'dateImmutable', 'columnName' => 'date_immutable', 'type' => 'datetime_immutable', 'serializer_options' => ['format' => 'Y-m-d H:i:s']]]],
                     ['addField', [['fieldName' => 'dateMutable', 'columnName' => 'date_mutable', 'type' => 'datetime']]],
                     ['addField', [['fieldName' => 'timeZone', 'columnName' => 'time_zone', 'type' => 'datetimezone']]],
                     ['addField', [['fieldName' => 'json', 'columnName' => 'json', 'type' => 'json']]],
@@ -86,6 +77,17 @@ class TingExtension extends \atoum
                     ['addField', [['fieldName' => 'genericUuid', 'columnName' => 'generic_uuid', 'type' => 'uuid']]],
                     ['addField', [['fieldName' => 'uuidV4', 'columnName' => 'uuid_v4', 'type' => 'uuid']]],
                 ])
+        ;
+    }
+    
+    public function testContainerShouldDeclareValueResolverIfAvailable()
+    {
+        $this
+            ->if($containerBuilder = new ContainerBuilder(new ParameterBag(['kernel.debug' => false])))
+            ->then($this->newTestedInstance->load([], $containerBuilder))
+            ->and($shouldBeDeclared = interface_exists(ValueResolverInterface::class) && class_exists(ValueResolver::class))
+                ->boolean($containerBuilder->hasDefinition('ting.argumentvalueresolver'))
+                    ->isEqualTo($shouldBeDeclared)
         ;
     }
 }

@@ -9,7 +9,8 @@ class Column
         $autoIncrement = false,
         $primary = false,
         $column = null,
-        $serializer = null
+        $serializer = null,
+        $serializerOptions = [],
     ) {
         
     }

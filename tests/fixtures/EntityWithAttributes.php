@@ -20,7 +20,7 @@ class EntityWithAttributes
     #[Column]
     public string $fieldAsCamelCase;
     
-    #[Column]
+    #[Column(serializerOptions: ['format' => 'Y-m-d H:i:s'])]
     public \DateTimeImmutable $dateImmutable;
     
     #[Column]
