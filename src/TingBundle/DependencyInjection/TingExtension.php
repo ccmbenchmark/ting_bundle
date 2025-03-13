@@ -28,6 +28,7 @@ use CCMBenchmark\Ting\Repository\Metadata;
 use CCMBenchmark\TingBundle\ArgumentResolver\EntityValueResolver;
 use CCMBenchmark\TingBundle\Schema\Column;
 use CCMBenchmark\TingBundle\Schema\Table;
+use CCMBenchmark\TingBundle\Serializer\SymfonySerializer;
 use Doctrine\Common\Cache\VoidCache;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use CCMBenchmark\TingBundle\TingBundle;
@@ -43,6 +44,7 @@ use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -152,6 +154,11 @@ class TingExtension extends Extension
 
             $container->setDefinition(EntityValueResolver::class, $definition);
         }
+
+        $serializerFactoryDefinition = $container->getDefinition('ting.serializerfactory');
+        foreach ($container->findTaggedServiceIds('ting.serializer') as $id => $tags) {
+            $serializerFactoryDefinition->addMethodCall('add', [new Reference($id)]);
+        }
     }
 
     /**
@@ -205,15 +212,24 @@ class TingExtension extends Extension
                     \DateTime::class => 'datetime',
                     \DateTimeZone::class => 'datetimezone',
                     Uuid::class => 'uuid',
-                    default => 'string'
+                    default => (interface_exists(SerializerInterface::class) ? 'symfony_serializer' : 'string')
                 };
+            }
+            $options = $mappingAttribute->getArguments()['serializerOptions'] ?? [];
+            if ($newField['type'] === 'symfony_serializer') {
+                $defaultOptions = [
+                    'serialize' => ['context' => ['groups' => ['*']]],
+                    'unserialize' => ['context' => ['groups' => ['*']], 'type' => $property->getType()->getName()]
+                ];
+                $options = array_merge_recursive($defaultOptions, $options);
+                $newField['serializer'] = SymfonySerializer::class;
             }
 
             if ($mappingAttribute->getArguments()['serializer'] ?? false) {
                 $newField['serializer'] = $mappingAttribute->getArguments()['serializer'];
             }
-            if ($mappingAttribute->getArguments()['serializerOptions'] ?? false) {
-                $newField['serializer_options'] = $mappingAttribute->getArguments()['serializerOptions'];
+            if ($options !== []) {
+                $newField['serializer_options'] = $options;
             }
 
             $newMetadata->addMethodCall('addField', [$newField]);

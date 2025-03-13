@@ -5,6 +5,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <instanceof id="CCMBenchmark\Ting\Serializer\SerializerInterface" autowire="true">
+            <!-- Auto tag all instances of SerializerInterface with "ting.serializer" -->
+            <tag name="ting.serializer" />
+        </instanceof>
+
         <service id="ting" class="CCMBenchmark\TingBundle\Repository\RepositoryFactory" public="true">
             <argument type="service" id="ting.connectionpool" />
             <argument type="service" id="ting.metadatarepository" />
@@ -28,7 +33,7 @@
         </service>
         <service id="CCMBenchmark\Ting\MetadataRepository" alias="ting.metadatarepository" />
 
-        <service id="ting.serializerfactory" class="CCMBenchmark\Ting\Serializer\SerializerFactory" public="true">
+        <service id="ting.serializerfactory" class="CCMBenchmark\TingBundle\Serializer\SerializerFactory" public="true">
         </service>
         <service id="CCMBenchmark\Ting\Serializer\SerializerFactoryInterface" alias="ting.serializerfactory" />
 
@@ -117,6 +122,32 @@
             <argument type="service" id="ting.metadatarepository" />
             <argument type="service" id="ting" />
             <argument type="service" id="Symfony\Component\ExpressionLanguage\ExpressionLanguage" on-invalid="null" />
+        </service>
+
+        <service id="CCMBenchmark\Ting\Serializer\Json" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\BackedEnum" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\DateTime" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\DateTimeImmutable" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\DateTimeZone" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\Geometry" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\Ting\Serializer\Uuid" >
+            <tag name="ting.serializer" />
+        </service>
+        <service id="CCMBenchmark\TingBundle\Serializer\SymfonyJsonSerializer" >
+            <argument id="Symfony\Component\Serializer\SerializerInterface" on-invalid="null" />
+            <tag name="ting.serializer" />
         </service>
     </services>
 </container>

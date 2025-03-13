@@ -18,7 +18,9 @@
         "atoum/stubs": "^2.2",
         "brick/geo": ">=0.5 <=1.0",
         "symfony/expression-language": "^6.3 || ^7.2",
+        "symfony/serializer": "^6.0 || ^7.0",
         "symfony/security-bundle": "^6.0 || ^7.0",
+        "symfony/security-core": "^6.0 || ^7.0",
         "symfony/uid": "^6.0 || ^7.0"
     },
     "autoload": {

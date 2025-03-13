@@ -38,8 +38,6 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
      */
     protected $driverLogger = null;
 
-    protected array|Data $data = [];
-
     public function __construct()
     {
         $this->init();

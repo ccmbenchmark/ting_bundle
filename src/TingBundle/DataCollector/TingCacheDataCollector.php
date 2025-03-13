@@ -38,8 +38,6 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
      */
     protected $cacheLogger  = null;
 
-    protected array|Data $data = [];
-
     public function __construct()
     {
         $this->init();
