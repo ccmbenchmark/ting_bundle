@@ -57,7 +57,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
     public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
         if ($this->cacheLogger !== null) {
-            $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+            $this->data['cache']['operations'] = $this->cloneVar($this->cacheLogger->getOperations());
             $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
             $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
             $this->data['cache']['hits'] = $this->cacheLogger->getHits();
@@ -68,7 +68,7 @@ class TingCacheDataCollector extends DataCollector implements LateDataCollectorI
     public function lateCollect(): void
     {
         if ($this->cacheLogger !== null) {
-            $this->data['cache']['operations'] = $this->cacheLogger->getOperations();
+            $this->data['cache']['operations'] = $this->cloneVar($this->cacheLogger->getOperations());
             $this->data['cache']['operationsCount'] = count($this->data['cache']['operations']);
             $this->data['cache']['time'] = $this->cacheLogger->getTotalTime();
             $this->data['cache']['hits'] = $this->cacheLogger->getHits();

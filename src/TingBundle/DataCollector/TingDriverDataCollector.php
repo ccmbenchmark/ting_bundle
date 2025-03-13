@@ -57,44 +57,24 @@ class TingDriverDataCollector extends DataCollector implements LateDataCollector
     public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
         if ($this->driverLogger !== null) {
-            $this->data['driver']['queries'] = $this->driverLogger->getQueries();
-            $this->data['driver']['execs'] = $this->driverLogger->getExecs();
+            $this->data['driver']['queries'] = $this->cloneVar($this->driverLogger->getQueries());
+            $this->data['driver']['execs'] = $this->cloneVar($this->driverLogger->getExecs());
             $this->data['driver']['queryCount'] = count($this->data['driver']['queries']);
             $this->data['driver']['time'] = $this->driverLogger->getTotalTime();
-            $this->data['driver']['connections'] = $this->driverLogger->getConnections();
-            $this->data['driver']['connectionsHashToName'] = $this->driverLogger->getConnectionsHashToName();
-
-            // HttpKernel < 3.2 compatibility layer
-            // For >= 3.2 cloneVar is always present and MUST be used.
-            if (method_exists($this, 'cloneVar')) {
-                foreach ($this->data['driver']['queries'] as &$query) {
-                    if (isset($query['params']) === true) {
-                        $query['params'] = $this->cloneVar($query['params']);
-                    }
-                }
-            }
+            $this->data['driver']['connections'] = $this->cloneVar($this->driverLogger->getConnections());
+            $this->data['driver']['connectionsHashToName'] = $this->cloneVar($this->driverLogger->getConnectionsHashToName());
         }
     }
 
     public function lateCollect(): void
     {
         if ($this->driverLogger !== null) {
-            $this->data['driver']['queries'] = $this->driverLogger->getQueries();
-            $this->data['driver']['execs'] = $this->driverLogger->getExecs();
+            $this->data['driver']['queries'] = $this->cloneVar($this->driverLogger->getQueries());
+            $this->data['driver']['execs'] = $this->cloneVar($this->driverLogger->getExecs());
             $this->data['driver']['queryCount'] = count($this->data['driver']['queries']);
             $this->data['driver']['time'] = $this->driverLogger->getTotalTime();
-            $this->data['driver']['connections'] = $this->driverLogger->getConnections();
-            $this->data['driver']['connectionsHashToName'] = $this->driverLogger->getConnectionsHashToName();
-
-            // HttpKernel < 3.2 compatibility layer
-            // For >= 3.2 cloneVar is always present and MUST be used.
-            if (method_exists($this, 'cloneVar')) {
-                foreach ($this->data['driver']['queries'] as &$query) {
-                    if (isset($query['params']) === true) {
-                        $query['params'] = $this->cloneVar($query['params']);
-                    }
-                }
-            }
+            $this->data['driver']['connections'] = $this->cloneVar($this->driverLogger->getConnections());
+            $this->data['driver']['connectionsHashToName'] = $this->cloneVar($this->driverLogger->getConnectionsHashToName());
         }
     }
 
