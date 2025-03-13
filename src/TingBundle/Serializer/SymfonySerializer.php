@@ -2,12 +2,11 @@
 
 namespace CCMBenchmark\TingBundle\Serializer;
 
-use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterface;
 use CCMBenchmark\Ting\Serializer\SerializerInterface;
 
 class SymfonySerializer implements SerializerInterface
 {
-    public function __construct(private readonly ?SymfonySerializerInterface $serializer = null) {}
+    public function __construct(private readonly ?\Symfony\Component\Serializer\SerializerInterface $serializer = null) {}
 
     public function serialize($toSerialize, array $options = [])
     {

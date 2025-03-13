@@ -145,7 +145,7 @@
         <service id="CCMBenchmark\Ting\Serializer\Uuid" >
             <tag name="ting.serializer" />
         </service>
-        <service id="CCMBenchmark\TingBundle\Serializer\SymfonyJsonSerializer" >
+        <service id="CCMBenchmark\TingBundle\Serializer\SymfonySerializer" >
             <argument id="Symfony\Component\Serializer\SerializerInterface" on-invalid="null" />
             <tag name="ting.serializer" />
         </service>
