@@ -5,7 +5,7 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.1",
-        "ccmbenchmark/ting": "^3.10",
+        "ccmbenchmark/ting": "^3.11",
         "doctrine/cache": "^1.10",
         "symfony/validator": "^4.4 || ^5.0 || ^6.0 || ^7.0",
         "symfony/http-kernel": "^4.4 || ^5.0 || ^6.0 || ^7.0",
@@ -18,7 +18,9 @@
         "atoum/stubs": "^2.2",
         "brick/geo": ">=0.5 <=1.0",
         "symfony/expression-language": "^6.3 || ^7.2",
+        "symfony/serializer": "^6.0 || ^7.0",
         "symfony/security-bundle": "^6.0 || ^7.0",
+        "symfony/security-core": "^6.0 || ^7.0",
         "symfony/uid": "^6.0 || ^7.0"
     },
     "autoload": {

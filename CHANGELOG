@@ -1,3 +1,9 @@
+3.10.0 (unreleased):
+    * Feature: Allow complex types to be handled by symfony/serializer if available
+    * Feature: Leverage dependency injection for Serializers
+    * Fix: Profiler tab was broken in some case
+    * Enhancement: Better looking profiling tab
+
 3.9.0 (2025-01-17):
     * Feature: (SF6.2+) Supports automatic value resolving in controllers (with or without MapEntity), see [https://github.com/symfony/symfony/blob/7.2/src/Symfony/Bridge/Doctrine/ArgumentResolver/EntityValueResolver.php](Doctrine Bridge)
     * Feature: supports serializer options in attributes

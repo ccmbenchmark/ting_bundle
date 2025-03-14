@@ -2,132 +2,321 @@
 
 {% block toolbar %}
     {% set icon %}
-    <img width="20" height="28" alt="Database" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC" />
-    <span class="sf-toolbar-status{% if 50 < collector.querycount %} sf-toolbar-status-yellow{% endif %}">{{ collector.querycount }}</span>
-    {% if collector.querycount > 0 %}
-        <span class="sf-toolbar-info-piece-additional-detail">in {{ '%0.2f'|format(collector.time) }} ms</span>
-    {% endif %}
+        <img width="20" height="28" alt="Database" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC" />
+        <span class="sf-toolbar-status
+        {% if 50 < collector.querycount %} sf-toolbar-status-yellow{% endif %}
+        {% if 100 < collector.querycount %} sf-toolbar-status-red{% endif %}"
+              title="{{ collector.querycount }} queries">
+        {{ collector.querycount }}
+    </span>
+        {% if collector.querycount > 0 %}
+            <span class="sf-toolbar-info-piece-additional-detail">
+            <span class="query-time {% if collector.time > 1000 %}slow{% endif %}"
+                  title="Total execution time">
+                {{ '%0.2f'|format(collector.time) }} ms
+            </span>
+        </span>
+        {% endif %}
     {% endset %}
+
     {% set text %}
-    <div class="sf-toolbar-info-piece">
-        <b>DB Queries</b>
-        <span>{{ collector.querycount }}</span>
-    </div>
-    <div class="sf-toolbar-info-piece">
-        <b>Query time</b>
-        <span>{{ '%0.2f'|format(collector.time) }} ms</span>
-    </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Queries</b>
+            <span class="badge {% if collector.querycount > 50 %}badge-warning{% elseif collector.querycount > 100 %}badge-danger{% else %}badge-success{% endif %}">
+            {{ collector.querycount }}
+        </span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Execution time</b>
+            <span class="badge {% if collector.time > 1000 %}badge-danger{% elseif collector.time > 500 %}badge-warning{% else %}badge-success{% endif %}">
+            {{ '%0.2f'|format(collector.time) }} ms
+        </span>
+        </div>
     {% endset %}
     {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
 {% endblock %}
 
 {% block menu %}
-    <span class="label">
-    <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAYAAAB/E6/TAAABLUlEQVR42u3TP0vDQBiA8UK/gDiLzi0IhU4OEunk5OQUAhGSOBUCzqWfIKSzX8DRySF0URCcMjWLIJjFD9Cpk/D6HITecEPUuzhIAz8CIdyTP/f2iqI4qaqqDx8l5Ic2uIeP/bquezCokOAFF+oCN3t4gPzSEjc4NEPaCldQbzjELTYW0RJzHDchwwem+ons6ZBpLSJ7nueJC22h0V+FzmwWV0ee59vQNV67CGVZJmEYbkNjfpY6X6I0Qo4/3RMmTdDDspuQVsJvgkP3IdMbIkIjLPBoadG2646iKJI0Ta2wxm6OdnP0/Tk6DYJgHcfxpw21RtscDTDDnaVZ26474GkkSRIrrPEv5sgMTfHe+cA2O6wPH6vOBpYQNALneHb96XTEDI6dzpEZ0VzO0Rf3pP5LMLI4tAAAAABJRU5ErkJggg==" alt="" /></span>
-    <strong>Ting Queries</strong>
-    <span class="count">
-        <span>{{ collector.querycount }}</span>
-        <span>{{ '%0.0f'|format(collector.time) }} ms</span>
+    <span class="label {{ collector.querycount > 50 ? 'label-status-warning' : '' }}">
+        <span class="icon">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAYAAAB/E6/TAAABLUlEQVR42u3TP0vDQBiA8UK/gDiLzi0IhU4OEunk5OQUAhGSOBUCzqWfIKSzX8DRySF0URCcMjWLIJjFD9Cpk/D6HITecEPUuzhIAz8CIdyTP/f2iqI4qaqqDx8l5Ic2uIeP/bquezCokOAFF+oCN3t4gPzSEjc4NEPaCldQbzjELTYW0RJzHDchwwem+ons6ZBpLSJ7nueJC22h0V+FzmwWV0ee59vQNV67CGVZJmEYbkNjfpY6X6I0Qo4/3RMmTdDDspuQVsJvgkP3IdMbIkIjLPBoadG2646iKJI0Ta2wxm6OdnP0/Tk6DYJgHcfxpw21RtscDTDDnaVZ26474GkkSRIrrPEv5sgMTfHe+cA2O6wPH6vOBpYQNALneHb96XTEDI6dzpEZ0VzO0Rf3pP5LMLI4tAAAAABJRU5ErkJggg==" alt="" />
+        </span>
+        <strong>Ting Queries</strong>
+        <span class="count">
+            <span>{{ collector.querycount }}</span>
+            <span>{{ '%0.0f'|format(collector.time) }} ms</span>
+        </span>
     </span>
-</span>
 {% endblock %}
 
 {% block panel %}
-    {#{% if 'explain' == page %}
-        {{ render(controller('TingBundle:Profiler:explain', {
-        'token': token,
-        'panel': 'db',
-        'connectionName': app.request.query.get('connection'),
-        'query': app.request.query.get('query')
-        })) }}
-    {% else %}
-        {{ block('queries') }}
-    {% endif %}#}
     {{ block('queries') }}
 {% endblock %}
 
 {% block queries %}
-    <h2>Queries</h2>
+    <div class="queries-wrapper">
+        <div class="queries-summary">
+            <div class="total-queries">
+                <h2>Queries
+                    <span class="badge {% if collector.querycount > 50 %}badge-warning{% elseif collector.querycount > 100 %}badge-danger{% else %}badge-success{% endif %}">
+                        {{ collector.querycount }}
+                    </span>
+                </h2>
+            </div>
+        </div>
 
-    {% if collector.queries is empty %}
-        <p>
-            <em>No queries.</em>
-        </p>
-    {% else %}
-        <ul class="alt">
-            {% for i, query in collector.queries %}
-                <li class="{{ cycle(['odd', 'even'], i) }}">
-                    <p class="ting_infos">
-                        <span class="ting-label">Connection : <span><a href="#{{ query.connection }}">{{ collector.connectionsHashToName[query.connection] }}</a></span> |
-                        Database : <span>{{ query['database'] }}</span> | <span>{{ query['time'] }} ms</span>{% if query['type'] == 'statement' %}(<em>prepare only</em>){% endif %}
-                        </span>
-                    </p>
-                    <pre><code class="language-sql">{{ query['sql']|trim }}</code></pre>
-                    {% if query['params'] is defined and query['params'] is not empty %}
-                        {{ profiler_dump(query['params']) }}
-                    {% endif %}
-                    {% if query['type'] == 'statement' %}
-                        {% if collector.execs[query['name']] is not defined %}
-                            <p><em>This prepared query has not been executed</em></p>
-                        {% else %}
-                            <ul class="alt">
-                                {% for j, exec in collector.execs[query['name']] %}
-                                    <li class="{{ cycle(['odd', 'even'], j) }}">
-                                        <p class="ting_infos"><span class="ting-label"><span>{{ exec['time'] }} ms</span></span></p>
-                                        {{ profiler_dump(exec['params']) }}
+        {% if collector.queries is empty %}
+            <div class="empty">
+                <p><em>No query.</em></p>
+            </div>
+        {% else %}
+            <ul class="queries-list">
+                {% for i, query in collector.queries %}
+                    <li class="query-item {{ cycle(['odd', 'even'], i) }}">
+                        <div class="query-header">
+                            <div class="query-info">
+                                <span class="badge">Connection:
+                                    <a href="#{{ query.connection }}">{{ collector.connectionsHashToName[query.connection] }}</a>
+                                </span>
+                                <span class="badge">Database: {{ query['database'] }}</span>
+                                <span class="badge {% if query['time'] > 100 %}badge-warning{% elseif query['time'] > 200 %}badge-danger{% else %}badge-success{% endif %}">
+                                    {{ query['time'] | number_format(2) }} ms
+                                </span>
+                                {% if query['type'] == 'statement' %}
+                                    <span class="badge badge-info">prepare only</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="query-body">
+                            <pre><code class="language-sql" title="Cliquez pour copier">{{ query['sql']|trim }}</code></pre>
+
+                            {% if query['params'] is defined and query['params'] is not empty %}
+                                <div class="query-params">
+                                    <h4>Parameters</h4>
+                                    {{ profiler_dump(query['params']) }}
+                                </div>
+                            {% endif %}
+
+                            {% if query['type'] == 'statement' %}
+                                {% if collector.execs[query['name']] is not defined %}
+                                    <p class="no-execution"><em>This prepared query has not been executed.</em></p>
+                                {% else %}
+                                    <div class="query-executions">
+                                        <h4>Executions</h4>
+                                        <ul class="executions-list">
+                                            {% for j, exec in collector.execs[query['name']] %}
+                                                <li class="execution-item {{ cycle(['odd', 'even'], j) }}">
+                                                    <div class="execution-header">
+                                                        Execution #{{ loop.index }}
+                                                        <span class="badge {% if exec['time'] > 100 %}badge-warning{% elseif exec['time'] > 200 %}badge-danger{% else %}badge-success{% endif %}">
+                                                            {{ exec['time'] | number_format(2) }} ms
+                                                        </span>
+                                                    </div>
+                                                    {{ profiler_dump(exec['params']) }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="connections-section">
+            <h2>Connections</h2>
+            {% if collector.connections is empty %}
+                <p class="empty"><em>No connection.</em></p>
+            {% else %}
+                <ul class="connections-list">
+                    {% for name, connections in collector.connections %}
+                        <li class="connection-group">
+                            <h3>{{ name }}</h3>
+                            <ul class="connection-details">
+                                {% for connectionHash, connection in connections %}
+                                    <li id="{{ connectionHash }}" class="connection-item">
+                                        {{ connection['config']['user'] }}@{{ connection['config']['host'] }}:{{ connection['config']['port'] }}
                                     </li>
                                 {% endfor %}
                             </ul>
-                        {% endif %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
 
-    <h2>Database Connections</h2>
-
-    {% if collector.connections is empty %}
-        <p><em>No connection.</em></p>
-    {% else %}
-        <ul class="alt">
-            {% for name, connections in collector.connections %}
-                <li class="odd">
-                    <h3>{{ name }}</h3>
-                    <ul class="alt">
-                        {% for connectionHash, connection in connections %}
-                            <li id="{{ connectionHash }}">{{ connection['config']['user'] }}@{{ connection['config']['host'] }}:{{ connection['config']['port'] }}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
     <style>
-        h3 {
-            margin-bottom: 0px;
+        .queries-wrapper {
+            padding: 20px;
         }
 
-        #content #main p.ting_infos{
-            padding-bottom: 0;
+        .queries-summary {
+            margin-bottom: 30px;
         }
 
-        #content #main ul li{
-            padding-bottom: 10px;
-        }
-
-        span.ting-label span{
+        .badge {
             display: inline-block;
-            background-color: #aacd4e;
+            padding: 0.25em 0.6em;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+            color: white;
+            background: #4b4b4b;
+            margin-right: 5px;
+        }
+
+        .badge a {
+            color: #caefe6;
+        }
+
+        .badge-success { background: #28a745; }
+        .badge-warning { background: #ffc107; color: #000; }
+        .badge-danger { background: #dc3545; }
+        .badge-info { background: #17a2b8; }
+
+        .queries-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .query-item {
+            position: relative;
+            background-color: white;
+            border: 1px solid #e9ecef;
             border-radius: 6px;
-            padding: 4px;
-            margin-right: 2px;
-            font-size: 11px;
+            margin-bottom: 15px;
+            padding: 1.5em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .query-header {
+            margin-bottom: 15px;
+        }
+
+        .query-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .query-body pre {
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .query-body code {
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 1em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .query-body code:hover {
+            opacity: 0.8;
+        }
+
+        .query-params {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .query-executions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .executions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .execution-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .execution-header {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .connections-section {
+            margin-top: 40px;
+        }
+
+        .connections-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .connection-group {
+            margin-bottom: 20px;
+        }
+
+        .connection-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .connection-item {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .slow {
+            color: #dc3545;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
         }
 
         {% include('@Ting/Collector/prism.css.twig') %}
     </style>
+
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des requêtes lentes
+            document.querySelectorAll('.query-time').forEach(function(el) {
+                const time = parseFloat(el.textContent);
+                if (time > 100) {
+                    el.classList.add('slow');
+                }
+            });
+
+            // Copie des requêtes SQL
+            document.querySelectorAll('code.language-sql').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    navigator.clipboard.writeText(this.textContent.trim());
+
+                    // Feedback visuel
+                    const originalBg = this.style.background;
+                    this.style.background = '#d4edda';
+                    setTimeout(() => {
+                        this.style.background = originalBg;
+                    }, 200);
+                });
+            });
+        });
+
         {% include('@Ting/Collector/prism.js.twig') %}
     </script>
 {% endblock %}
