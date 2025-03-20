@@ -16,6 +16,9 @@ class SymfonySerializer implements SerializerInterface
 
     public function unserialize($serialized, array $options = [])
     {
+        if ($serialized === null) {
+            return null;
+        }
         $this->throwOnNullSerializer();
         if (!isset($options['type'])) {
             throw new \RuntimeException('SymfonySerializer requires type option to be set');
