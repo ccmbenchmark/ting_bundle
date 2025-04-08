@@ -191,7 +191,7 @@ class TingExtension extends Extension
                 'columnName' => $mappingAttribute->getArguments()['column'] ?? strtolower(preg_replace('/[A-Z]/', '_\\0', lcfirst($property->getName()))), // snake case by default in database
             ];
             if ($mappingAttribute->getArguments()['autoIncrement'] ?? false) {
-                $newField['autoIncrement'] = true;
+                $newField['autoincrement'] = true;
             }
             if ($mappingAttribute->getArguments()['primary'] ?? false) {
                 $newField['primary'] = true;

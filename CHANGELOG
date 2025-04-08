@@ -1,3 +1,6 @@
+3.10.1 (unreleased):
+    * Fix: autoincrement fields are now properly registered when using attributes
+
 3.10.0 (2025-03-14):
     * Feature: Allow complex types to be handled by symfony/serializer if available
     * Feature: Leverage dependency injection for Serializers
