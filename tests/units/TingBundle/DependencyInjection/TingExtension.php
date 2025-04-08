@@ -65,7 +65,7 @@ class TingExtension extends \atoum
                     ['setConnectionName', ['default']],
                     ['setRepository', ['default']],
                     ['addField', [
-                        ['fieldName' => 'id', 'columnName' => 'id', 'autoIncrement' => true, 'primary' => true, 'type' => 'int']]
+                        ['fieldName' => 'id', 'columnName' => 'id', 'autoincrement' => true, 'primary' => true, 'type' => 'int']]
                     ],
                     ['addField', [['fieldName' => 'fieldWithSpecifiedColumnName', 'columnName' => 'field', 'type' => 'string']]],
                     ['addField', [['fieldName' => 'fieldAsCamelCase', 'columnName' => 'field_as_camel_case', 'type' => 'string']]],
