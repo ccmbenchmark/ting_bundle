@@ -1,4 +1,4 @@
-3.10.1 (unreleased):
+3.10.1 (2025-04-17):
     * Fix: autoincrement fields are now properly registered when using attributes
     * Fix: allow null when using symfony/serializer
 
