@@ -33,6 +33,12 @@
         </service>
         <service id="CCMBenchmark\Ting\MetadataRepository" alias="ting.metadatarepository" />
 
+        <service id="ting.hydratablemetadatarepository" class="CCMBenchmark\Ting\HydratableMetadataRepository" public="true">
+            <argument type="service" id="ting.serializerfactory" />
+            <argument type="service" id="ting.cache.property_access" />
+        </service>
+        <service id="CCMBenchmark\Ting\HydratableMetadataRepository" alias="ting.hydratablemetadatarepository" />
+
         <service id="ting.serializerfactory" class="CCMBenchmark\TingBundle\Serializer\SerializerFactory" public="true">
         </service>
         <service id="CCMBenchmark\Ting\Serializer\SerializerFactoryInterface" alias="ting.serializerfactory" />
@@ -76,6 +82,12 @@
             </call>
             <call method="setUnitOfWork">
                 <argument type="service" id="ting.unitofwork" />
+            </call>
+        </service>
+
+        <service id="ting.hydrator_value_object" class="CCMBenchmark\Ting\Repository\HydratorValueObject" shared="false" public="true">
+            <call method="setHydratableMetadataRepository">
+                <argument type="service" id="ting.hydratablemetadatarepository" />
             </call>
         </service>
 

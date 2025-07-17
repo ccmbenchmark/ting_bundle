@@ -26,10 +26,12 @@ namespace CCMBenchmark\TingBundle\DependencyInjection;
 
 use CCMBenchmark\Ting\Repository\Metadata;
 use CCMBenchmark\TingBundle\ArgumentResolver\EntityValueResolver;
+use CCMBenchmark\TingBundle\Attribute\Hydratable;
 use CCMBenchmark\TingBundle\Schema\Column;
 use CCMBenchmark\TingBundle\Schema\Table;
 use CCMBenchmark\TingBundle\Serializer\SymfonySerializer;
 use Doctrine\Common\Cache\VoidCache;
+use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use CCMBenchmark\TingBundle\TingBundle;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -63,16 +65,22 @@ class TingExtension extends Extension
         $container->setParameter('ting.repositories', $config['repositories']);
         $container->setParameter('ting.connections', $config['connections']);
         $container->setParameter('ting.database_options', $config['databases_options']);
-        
+
         $metadataRepository = $container->getDefinition('ting.metadatarepository');
+        $hydratableMetadataRepository = $container->getDefinition('ting.hydratablemetadatarepository');
         if (method_exists($container, 'registerAttributeForAutoconfiguration') === true) {
             // SF 5.4+
             $container->registerAttributeForAutoconfiguration(Table::class, function(ChildDefinition $definition, Table $attribute, \ReflectionClass $reflector) use ($container, $metadataRepository): void {
                 $newMetadata = $this->getMetadata($reflector, $attribute);
                 $metadataRepository->addMethodCall('addMetadata', [$attribute->repository, $newMetadata]);
             });
+
+            $container->registerAttributeForAutoconfiguration(Hydratable::class, function(ChildDefinition $definition, Hydratable $attribute, \ReflectionClass $reflector) use ($container, $metadataRepository, $hydratableMetadataRepository): void {
+                $newMetadata = $this->getMetadataForHydratable($reflector, $attribute);
+                $metadataRepository->addMethodCall('addMetadata', [$reflector->getName(), $newMetadata]);
+            });
         }
-        
+
         $definition = $container->getDefinition('ting.cache');
         if (isset($config['cache_provider']) === true) {
             $definition->addMethodCall('setCache', [new Reference($config['cache_provider'])]);
@@ -89,7 +97,7 @@ class TingExtension extends Extension
         if ($config['configuration_resolver_service'] !== null) {
             $container->setAlias('ting.configuration_resolver', $config['configuration_resolver_service']);
         }
-        
+
         $propertyAccessDefinition = $container->register('ting.cache.property_access', AdapterInterface::class);
         if (!$container->getParameter('kernel.debug')) {
             $propertyAccessDefinition->setFactory([PropertyAccessor::class, 'createCache']);
@@ -142,7 +150,7 @@ class TingExtension extends Extension
                 $definition->addArgument(new Reference('cache.app'));
                 $container->setDefinition('ting.expression_language', $definition);
             }
-            
+
             $definition = new Definition(EntityValueResolver::class);
             $definition->setArguments([
                 new Reference('ting.metadatarepository'),
@@ -196,25 +204,8 @@ class TingExtension extends Extension
             if ($mappingAttribute->getArguments()['primary'] ?? false) {
                 $newField['primary'] = true;
             }
+            $newField['type'] = $this->getMetadataType($property);
 
-            if (is_subclass_of($property->getType()->getName(), '\Brick\Geo\Geometry')) {
-                $newField['type'] = 'geometry';
-            } elseif (is_subclass_of($property->getType()->getName(), Uuid::class)) {
-                $newField['type'] = 'uuid';
-            } else {
-                $newField['type'] = match ($property->getType()->getName()) {
-                    'string' => 'string',
-                    'int' => 'int',
-                    'float' => 'double',
-                    'bool' => 'bool',
-                    'array' => 'json',
-                    \DateTimeImmutable::class => 'datetime_immutable',
-                    \DateTime::class => 'datetime',
-                    \DateTimeZone::class => 'datetimezone',
-                    Uuid::class => 'uuid',
-                    default => (interface_exists(SerializerInterface::class) ? 'symfony_serializer' : 'string')
-                };
-            }
             $options = $mappingAttribute->getArguments()['serializerOptions'] ?? [];
             if ($newField['type'] === 'symfony_serializer') {
                 $defaultOptions = [
@@ -235,5 +226,53 @@ class TingExtension extends Extension
             $newMetadata->addMethodCall('addField', [$newField]);
         }
         return $newMetadata;
+    }
+
+    function getMetadataForHydratable(\ReflectionClass $reflector, Hydratable $attribute)
+    {
+        $newMetadata = new Definition(Metadata::class);
+        $newMetadata->addArgument(new Reference('ting.serializerfactory'));
+        $newMetadata->addMethodCall('setEntity', [$reflector->name]);
+        $newMetadata->addMethodCall('setTable', ['hydratable']);
+        $newMetadata->addMethodCall('setDatabase', ['hydratable']);
+        $newMetadata->addMethodCall('setConnectionName', ['']);
+        $newMetadata->addMethodCall('setRepository', ['']);
+
+        foreach ($reflector->getProperties() as $property) {
+            $newField = [
+                'fieldName' => $property->getName(),
+                'columnName' => $property->getName(),
+                'type' => $this->getMetadataType($property),
+//                'nullable' => $property->getType()?->allowsNull()
+            ];
+
+            $newMetadata->addMethodCall('addField', [$newField]);
+        }
+
+        return $newMetadata;
+    }
+
+    private function getMetadataType(ReflectionProperty $property): string
+    {
+        if (is_subclass_of($property->getType()->getName(), '\Brick\Geo\Geometry')) {
+            $type = 'geometry';
+        } elseif (is_subclass_of($property->getType()->getName(), Uuid::class)) {
+            $type = 'uuid';
+        } else {
+            $type = match ($property->getType()->getName()) {
+                'string' => 'string',
+                'int' => 'int',
+                'float' => 'double',
+                'bool' => 'bool',
+                'array' => 'json',
+                \DateTimeImmutable::class => 'datetime_immutable',
+                \DateTime::class => 'datetime',
+                \DateTimeZone::class => 'datetimezone',
+                Uuid::class => 'uuid',
+                default => (interface_exists(SerializerInterface::class) ? 'symfony_serializer' : 'string')
+            };
+        }
+
+        return $type;
     }
 }
