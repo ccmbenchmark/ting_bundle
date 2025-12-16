@@ -8,13 +8,13 @@ class SymfonySerializer implements SerializerInterface
 {
     public function __construct(private readonly ?\Symfony\Component\Serializer\SerializerInterface $serializer = null) {}
 
-    public function serialize($toSerialize, array $options = [])
+    public function serialize($toSerialize, array $options = []): mixed
     {
         $this->throwOnNullSerializer();
         return $this->serializer->serialize($toSerialize, 'json', $options['context'] ?? []);
     }
 
-    public function unserialize($serialized, array $options = [])
+    public function unserialize($serialized, array $options = []): mixed
     {
         if ($serialized === null) {
             return null;
