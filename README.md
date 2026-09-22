@@ -17,6 +17,10 @@ Installation
 - [Using Ting as a User Provider](#using-ting-a-user-provider)
 - [Declare a unique constraint](#declare-a-unique-constraint-in-a-table)
 - [Using Ting as a Value Resolver](#using-ting-as-a-value-resolver)
+- [Symfony Profiler integration](#symfony-profiler-integration)
+- [Metadata cache warmer/clearer](#metadata-cache-warmerclearer)
+- [Dynamic configuration resolution](#dynamic-configuration-resolution)
+- [Symfony Serializer bridge](#symfony-serializer-bridge)
 
 Configuration
 =============
@@ -70,7 +74,9 @@ Configuration
 ```
 
 ## About public properties
-Public properties can be used in your entities, however for PHP < 8.4, you should declare a setter to notify the property change.
+See [Ting's README](https://gitlab.ccmbg.com/core/ting#declaring-an-entity) for the general `NotifyProperty`/`NotifyPropertyInterface` concept (protected properties + explicit setters).
+
+Public properties can also be used in your entities, however for PHP < 8.4, you should declare a setter to notify the property change.
 
 PHP < 8.4:
 
@@ -344,3 +350,48 @@ class UserController {
     }
 }
 ```
+
+## Symfony Profiler integration
+
+The bundle automatically registers two data collectors, visible in the Symfony Profiler (dev environment) without any configuration:
+
+- **`ting.driver`** (`CCMBenchmark\TingBundle\DataCollector\TingDriverDataCollector`): every query/exec run against a Ting connection, their execution time, and the opened connections.
+- **`ting.cache`** (`CCMBenchmark\TingBundle\DataCollector\TingCacheDataCollector`): cache operations (hits/misses, total time) when a cache is configured for Ting.
+
+Useful to spot N+1 queries or slow queries directly from the profiler toolbar.
+
+## Metadata cache warmer/clearer
+
+In production, entity metadata (built from YAML config or attributes) is expensive to recompute on every request. The bundle registers:
+
+- **`CCMBenchmark\TingBundle\Cache\MetadataWarmer`** (`CacheWarmerInterface`): called by `bin/console cache:warmup`, it calls `batchLoadMetadata()` for every configured repository group and writes the result to a cache file via `MetadataCacheGenerator`.
+- **`CCMBenchmark\TingBundle\Cache\MetadataClearer`** (`CacheClearerInterface`): called by `bin/console cache:clear`, it removes that cache file so it gets regenerated on next warmup/first request.
+
+Both are wired automatically once the bundle is enabled — no manual configuration needed.
+
+## Dynamic configuration resolution
+
+If your `ting.repositories.<alias>.options` need to be resolved dynamically (e.g. computed from something not expressible in static YAML), register a service tagged/aliased as `ting.configuration_resolver` implementing `CCMBenchmark\TingBundle\ConfigurationResolver\ConfigurationResolverInterface`:
+
+```php
+<?php
+namespace App\Ting;
+
+use CCMBenchmark\TingBundle\ConfigurationResolver\ConfigurationResolverInterface;
+
+class MyConfigurationResolver implements ConfigurationResolverInterface
+{
+    public function resolveConf($alias, array $configuration)
+    {
+        // $alias is the repository group name (e.g. "Acme" in the main configuration example)
+        // return the (possibly modified) $configuration array
+        return $configuration;
+    }
+}
+```
+
+It's called once when metadata is loaded (`RepositoryFactory::loadMetadata()`), and is optional — omit it and the static configuration is used as-is.
+
+## Symfony Serializer bridge
+
+`CCMBenchmark\TingBundle\Serializer\SymfonySerializer` implements Ting's `SerializerInterface` on top of `symfony/serializer` (require-dev `symfony/serializer` to use it). It delegates `serialize()`/`unserialize()` to the Symfony serializer configured in your app, letting you reuse your existing normalizers/encoders for Ting-managed fields instead of a Ting-specific serializer.
