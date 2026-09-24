@@ -70,4 +70,4 @@ composer dump-autoload
 
 ## Git
 
-- Dépôt rapatrié de GitHub vers GitLab (COREPHP-649). L'ancien dépôt GitHub peut être maintenu en miroir en lecture (push mirror) pour ne pas casser les projets consommateurs référençant encore l'URL GitHub dans leur `composer.json`.
+- Dépôt rapatrié de GitHub vers GitLab (COREPHP-649), historique conservé. Pas de miroir GitHub maintenu : les projets consommateurs basculent vers le registre Composer GitLab (`gitlab.ccmbg.com/core`) via un `composer update` ciblé, puis le dépôt GitHub est archivé.

@@ -1,41 +1,41 @@
 Installation
 ============
 
-1. Require Ting Bundle with
+1. Installer Ting Bundle avec
     ```composer require ccmbenchmark/ting_bundle```
-2. Load Bundles in AppKernel.php
+2. Charger le Bundle dans AppKernel.php
 
 ```php
     new CCMBenchmark\TingBundle\TingBundle(),
 ```
 
-## Table of contents
+## Sommaire
 - [Configuration](#configuration)
-    - [Main configuration](#main-configuration)
-    - [About public properties](#about-public-properties)
-    - [Declare metadata with attributes](#declare-metadata-with-attributes)
-- [Using Ting as a User Provider](#using-ting-a-user-provider)
-- [Declare a unique constraint](#declare-a-unique-constraint-in-a-table)
-- [Using Ting as a Value Resolver](#using-ting-as-a-value-resolver)
-- [Symfony Profiler integration](#symfony-profiler-integration)
-- [Metadata cache warmer/clearer](#metadata-cache-warmerclearer)
-- [Dynamic configuration resolution](#dynamic-configuration-resolution)
-- [Symfony Serializer bridge](#symfony-serializer-bridge)
+    - [Configuration principale](#configuration-principale)
+    - [À propos des propriétés publiques](#à-propos-des-propriétés-publiques)
+    - [Déclarer les métadonnées avec des attributs](#déclarer-les-métadonnées-avec-des-attributs)
+- [Utiliser Ting comme User Provider](#utiliser-ting-comme-user-provider)
+- [Déclarer une contrainte d'unicité sur une table](#déclarer-une-contrainte-dunicité-sur-une-table)
+- [Utiliser Ting comme Value Resolver](#utiliser-ting-comme-value-resolver)
+- [Intégration au Profiler Symfony](#intégration-au-profiler-symfony)
+- [Cache warmer/clearer des métadonnées](#cache-warmerclearer-des-métadonnées)
+- [Résolution dynamique de configuration](#résolution-dynamique-de-configuration)
+- [Bridge vers le Serializer Symfony](#bridge-vers-le-serializer-symfony)
 
 Configuration
 =============
 
-## Main configuration
+## Configuration principale
 ```
 #!yaml
 
     ting:
-        repositories: # Unnecessary if entities registered with attributes
+        repositories: # Inutile si les entités sont déclarées avec des attributs
             Acme:
                 namespace: Acme\DemoBundle\Entity
                 directory: "@DemoBundle/Entity"
                 options:
-                    #pass options to your repository
+                    # passer des options à votre repository
                     Acme\DemoBundle\BazRepository:
                         extra:
                             bar: hello
@@ -73,12 +73,12 @@ Configuration
                 timezone: 'Europe/Paris'
 ```
 
-## About public properties
-See [Ting's README](https://gitlab.ccmbg.com/core/ting#declaring-an-entity) for the general `NotifyProperty`/`NotifyPropertyInterface` concept (protected properties + explicit setters).
+## À propos des propriétés publiques
+Voir le [README de Ting](https://gitlab.ccmbg.com/core/ting#déclarer-une-entité) pour le concept général `NotifyProperty`/`NotifyPropertyInterface` (propriétés protégées + setters explicites).
 
-Public properties can also be used in your entities, however for PHP < 8.4, you should declare a setter to notify the property change.
+Les propriétés publiques peuvent aussi être utilisées dans vos entités, cependant pour PHP < 8.4, vous devez déclarer un setter pour notifier le changement de propriété.
 
-PHP < 8.4:
+PHP < 8.4 :
 
 ```php
 <?php
@@ -103,7 +103,7 @@ class City implements NotifyPropertyInterface {
 
 ```
 
-For PHP >= 8.4, you may use a property hook instead. This hook will be bypassed by Ting for hydratation.
+Pour PHP >= 8.4, vous pouvez utiliser un property hook à la place. Ce hook sera contourné par Ting lors de l'hydratation.
 
 ```php
 <?php
@@ -125,22 +125,22 @@ class City implements NotifyPropertyInterface {
 }
 ```
 
-### A note about uninitialized typed properties
-- When persisting an entity with uninitialized typed property, the property will be ignored ; a default value must be defined in your database for this column to prevent a failure
-- You cannot access an uninitialized typed property, PHP will trigger an error
+### Remarque sur les propriétés typées non initialisées
+- Lors de la persistance d'une entité avec une propriété typée non initialisée, la propriété sera ignorée ; une valeur par défaut doit être définie en base pour cette colonne afin d'éviter un échec.
+- Vous ne pouvez pas accéder à une propriété typée non initialisée, PHP déclenchera une erreur.
 
-## Declare metadata with attributes
-Attributes are provided to declare an entity. Relevant attributes are available in `CCMBenchmark\TingBundle\Schema`.
+## Déclarer les métadonnées avec des attributs
+Des attributs sont fournis pour déclarer une entité. Les attributs pertinents sont disponibles dans `CCMBenchmark\TingBundle\Schema`.
 
 ### Table
-- Full name: `CCMBenchmark\TingBundle\Schema\Table`
-- This attribute must be added to your class, with all relevant options (table, connection, etc.).
+- Nom complet : `CCMBenchmark\TingBundle\Schema\Table`
+- Cet attribut doit être ajouté à votre classe, avec toutes les options pertinentes (table, connexion, etc.).
 
 ### Column
-- Full name: `CCMBenchmark\TingBundle\Schema\Column`
-- This attribute must be added to every property mapped to the database. Serialization is inferred from the type, if available.
+- Nom complet : `CCMBenchmark\TingBundle\Schema\Column`
+- Cet attribut doit être ajouté à chaque propriété mappée en base. La sérialisation est déduite du type, si disponible.
 
-### Full example
+### Exemple complet
 
 ```php
 // src/Entity/City.php
@@ -190,10 +190,10 @@ class CityRepository extends CCMBenchmark\Ting\Repository\Repository {
 }
 ```
 
-## Using Ting as a User Provider
-User providers (re)load users from a storage based on a "user identifier" (extract from [symfony documentation](https://symfony.com/doc/current/security/user_providers.html)).
+## Utiliser Ting comme User Provider
+Les user providers (re)chargent les utilisateurs depuis un stockage à partir d'un « identifiant utilisateur » (extrait de la [documentation Symfony](https://symfony.com/doc/current/security/user_providers.html)).
 
-Ting can be used as a User Provider, it's automatically registered by the bundle as the provider `ting`. To do so, update your security configuration.
+Ting peut être utilisé comme User Provider, il est automatiquement enregistré par le bundle en tant que provider `ting`. Pour cela, mettez à jour votre configuration de sécurité.
 
 ```yaml
 security:
@@ -205,15 +205,15 @@ security:
         property: email
 ```
 
-Your entity will have to implements the following interfaces: `Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface` (for password authenticated users) and `Symfony\Component\Security\Core\User\UserInterface` (common to all kind of users).
-It needs to implement `__serialize` too.
+Votre entité devra implémenter les interfaces suivantes : `Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface` (pour les utilisateurs authentifiés par mot de passe) et `Symfony\Component\Security\Core\User\UserInterface` (commune à tous les types d'utilisateurs).
+Elle doit aussi implémenter `__serialize`.
 
-## Declare a Unique constraint in a table
-If you use the component `symfony/validator`, you may need to ensure that a value (or a combination of them) is unique in your table.
+## Déclarer une contrainte d'unicité sur une table
+Si vous utilisez le composant `symfony/validator`, vous pourriez avoir besoin de garantir qu'une valeur (ou une combinaison de valeurs) est unique dans votre table.
 
-You can use the Constraint `CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity` to do so. In can be used as an annotation, or as an attribute.
+Vous pouvez utiliser la Constraint `CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity` pour cela. Elle peut être utilisée en annotation ou en attribut.
 
-Example:
+Exemple :
 ```php
 namespace App\Entity;
 
@@ -270,7 +270,7 @@ class User implements UserInterface, NotifyPropertyInterface {
 }
 ```
 
-With that example you can assert, when creating a new user, that the email address is unique:
+Avec cet exemple, vous pouvez vérifier, lors de la création d'un nouvel utilisateur, que l'adresse email est unique :
 
 ```php
 <?php
@@ -300,14 +300,14 @@ class createUserController extends AbstractController {
 
 ```
 
-## Using Ting as a Value Resolver
-This bundle automatically registers a [Value Resolver](https://symfony.com/doc/current/controller/value_resolver.html#built-in-value-resolvers).
+## Utiliser Ting comme Value Resolver
+Ce bundle enregistre automatiquement un [Value Resolver](https://symfony.com/doc/current/controller/value_resolver.html#built-in-value-resolvers).
 
-You can automatically map request parameters to entities:
-1. Declare a parameter in your route (i.e: `/api/users/{userId}`), using the property in your entity you'll use to fetch data (in this case: `userId`)
-2. Map it to your action parameters:
-   1. Add it to your signature: `public function getUser(User $user)`
-   2. Update the route to do the mapping: `/api/users/{userId:user}` (in this case: the `User` having `userId` matching the request will be fetched and injected to your action with the argument `$user`)
+Vous pouvez mapper automatiquement les paramètres de requête vers des entités :
+1. Déclarez un paramètre dans votre route (ex : `/api/users/{userId}`), en utilisant la propriété de votre entité qui servira à récupérer la donnée (ici : `userId`)
+2. Mappez-le vers les paramètres de votre action :
+   1. Ajoutez-le à la signature : `public function getUser(User $user)`
+   2. Mettez à jour la route pour faire le mapping : `/api/users/{userId:user}` (ici : le `User` dont `userId` correspond à la requête sera récupéré et injecté dans votre action via l'argument `$user`)
 
 ```php
 <?php
@@ -327,11 +327,11 @@ class UserController {
 }
 ```
 
-For more advanced use cases, you can leverage:
-- [The Expression Language component](https://symfony.com/doc/current/components/expression_language.html)
-- The `CCMBenchmark\TingBundle\Attribute\MapEntity` attribute
+Pour des cas d'usage plus avancés, vous pouvez utiliser :
+- [Le composant Expression Language](https://symfony.com/doc/current/components/expression_language.html)
+- L'attribut `CCMBenchmark\TingBundle\Attribute\MapEntity`
 
-Example:
+Exemple :
 
 ```php
 <?php
@@ -351,27 +351,27 @@ class UserController {
 }
 ```
 
-## Symfony Profiler integration
+## Intégration au Profiler Symfony
 
-The bundle automatically registers two data collectors, visible in the Symfony Profiler (dev environment) without any configuration:
+Le bundle enregistre automatiquement deux data collectors, visibles dans le Profiler Symfony (environnement de dev) sans aucune configuration :
 
-- **`ting.driver`** (`CCMBenchmark\TingBundle\DataCollector\TingDriverDataCollector`): every query/exec run against a Ting connection, their execution time, and the opened connections.
-- **`ting.cache`** (`CCMBenchmark\TingBundle\DataCollector\TingCacheDataCollector`): cache operations (hits/misses, total time) when a cache is configured for Ting.
+- **`ting.driver`** (`CCMBenchmark\TingBundle\DataCollector\TingDriverDataCollector`) : chaque requête/exec exécutée sur une connexion Ting, leur temps d'exécution, et les connexions ouvertes.
+- **`ting.cache`** (`CCMBenchmark\TingBundle\DataCollector\TingCacheDataCollector`) : opérations de cache (hits/miss, temps total) quand un cache est configuré pour Ting.
 
-Useful to spot N+1 queries or slow queries directly from the profiler toolbar.
+Utile pour repérer des requêtes N+1 ou des requêtes lentes directement depuis la toolbar du profiler.
 
-## Metadata cache warmer/clearer
+## Cache warmer/clearer des métadonnées
 
-In production, entity metadata (built from YAML config or attributes) is expensive to recompute on every request. The bundle registers:
+En production, les métadonnées d'entité (construites depuis la config YAML ou les attributs) sont coûteuses à recalculer à chaque requête. Le bundle enregistre :
 
-- **`CCMBenchmark\TingBundle\Cache\MetadataWarmer`** (`CacheWarmerInterface`): called by `bin/console cache:warmup`, it calls `batchLoadMetadata()` for every configured repository group and writes the result to a cache file via `MetadataCacheGenerator`.
-- **`CCMBenchmark\TingBundle\Cache\MetadataClearer`** (`CacheClearerInterface`): called by `bin/console cache:clear`, it removes that cache file so it gets regenerated on next warmup/first request.
+- **`CCMBenchmark\TingBundle\Cache\MetadataWarmer`** (`CacheWarmerInterface`) : appelé par `bin/console cache:warmup`, il appelle `batchLoadMetadata()` pour chaque groupe de repositories configuré et écrit le résultat dans un fichier de cache via `MetadataCacheGenerator`.
+- **`CCMBenchmark\TingBundle\Cache\MetadataClearer`** (`CacheClearerInterface`) : appelé par `bin/console cache:clear`, il supprime ce fichier de cache pour qu'il soit régénéré au prochain warmup/à la prochaine requête.
 
-Both are wired automatically once the bundle is enabled — no manual configuration needed.
+Les deux sont branchés automatiquement dès que le bundle est activé — aucune configuration manuelle nécessaire.
 
-## Dynamic configuration resolution
+## Résolution dynamique de configuration
 
-If your `ting.repositories.<alias>.options` need to be resolved dynamically (e.g. computed from something not expressible in static YAML), register a service tagged/aliased as `ting.configuration_resolver` implementing `CCMBenchmark\TingBundle\ConfigurationResolver\ConfigurationResolverInterface`:
+Si les `options` d'un groupe (`ting.repositories.<alias>.options`) doivent être résolues dynamiquement (par exemple calculées à partir de quelque chose qui n'est pas exprimable en YAML statique), enregistrez un service tagué/aliasé `ting.configuration_resolver` implémentant `CCMBenchmark\TingBundle\ConfigurationResolver\ConfigurationResolverInterface` :
 
 ```php
 <?php
@@ -383,15 +383,15 @@ class MyConfigurationResolver implements ConfigurationResolverInterface
 {
     public function resolveConf($alias, array $configuration)
     {
-        // $alias is the repository group name (e.g. "Acme" in the main configuration example)
-        // return the (possibly modified) $configuration array
+        // $alias est le nom du groupe de repositories (ex: "Acme" dans l'exemple de configuration principale)
+        // retourne le tableau $configuration (potentiellement modifié)
         return $configuration;
     }
 }
 ```
 
-It's called once when metadata is loaded (`RepositoryFactory::loadMetadata()`), and is optional — omit it and the static configuration is used as-is.
+Il est appelé une fois, au chargement des métadonnées (`RepositoryFactory::loadMetadata()`), et il est optionnel — sans lui, la configuration statique est utilisée telle quelle.
 
-## Symfony Serializer bridge
+## Bridge vers le Serializer Symfony
 
-`CCMBenchmark\TingBundle\Serializer\SymfonySerializer` implements Ting's `SerializerInterface` on top of `symfony/serializer` (require-dev `symfony/serializer` to use it). It delegates `serialize()`/`unserialize()` to the Symfony serializer configured in your app, letting you reuse your existing normalizers/encoders for Ting-managed fields instead of a Ting-specific serializer.
+`CCMBenchmark\TingBundle\Serializer\SymfonySerializer` implémente le `SerializerInterface` de Ting par-dessus `symfony/serializer` (require-dev `symfony/serializer` pour l'utiliser). Il délègue `serialize()`/`unserialize()` au serializer Symfony configuré dans votre application, ce qui permet de réutiliser vos normalizers/encoders existants pour les champs gérés par Ting plutôt qu'un serializer spécifique à Ting.
