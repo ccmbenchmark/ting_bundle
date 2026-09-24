@@ -3,6 +3,10 @@
     "description" : "Symfony bundle for ccmbenchmark/ting. Provides an interface to use a lightweight datamapper in symfony.",
     "type": "symfony-bundle",
     "license": "Apache-2.0",
+    "support": {
+        "issues": "https://gitlab.ccmbg.com/core/ting_bundle/-/issues",
+        "source": "https://gitlab.ccmbg.com/core/ting_bundle"
+    },
     "require": {
         "php": ">=8.1",
         "ccmbenchmark/ting": "^3.11",
