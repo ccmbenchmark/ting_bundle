@@ -1,4 +1,4 @@
-unreleased (4.0.0):
+4.0.0 (2026-09-25):
     * Require ccmbenchmark/ting ^4.0, distributed from the GitLab core registry
 
 3.11.0 (2026-09-26):
