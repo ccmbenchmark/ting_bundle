@@ -1,3 +1,6 @@
+unreleased (4.0.0):
+    * Require ccmbenchmark/ting ^4.0, distributed from the GitLab core registry
+
 3.11.0 (2026-09-26):
     * Worker mode: loggers, data collectors, connection pool and unit of work are reset between requests (kernel.reset)
     * Require ccmbenchmark/ting ^3.13

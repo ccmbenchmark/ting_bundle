@@ -21,7 +21,7 @@ stages:
     - composer install --prefer-source --no-interaction
     - vendor/bin/atoum
 
-unit_tests_latest:
+unit_tests-latest:
   extends: .unit_tests-latest
 
 unit_tests-lowest:
