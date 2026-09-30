@@ -31,9 +31,21 @@ src/TingBundle/
 └── Attribute/               # Ex: MapEntity
 ```
 
+## 📚 Documentation
+
+Le dossier [`documentation/`](documentation/README.md) contient une doc pédagogique par sujet (écrite en 2026, voir COREPHP-744) — à consulter en priorité selon le sujet plutôt que de tout lire :
+
+- [01-installation-et-configuration.md](documentation/01-installation-et-configuration.md) — installer le bundle, config YAML connexions/repositories
+- [02-declarer-une-entite.md](documentation/02-declarer-une-entite.md) — propriétés publiques, attributs `Schema\Table`/`Schema\Column`
+- [03-user-provider.md](documentation/03-user-provider.md) — Ting comme User Provider Symfony Security
+- [04-contrainte-unicite.md](documentation/04-contrainte-unicite.md) — `UniqueEntity`, option `identityFields`
+- [05-value-resolver.md](documentation/05-value-resolver.md) — Value Resolver, `#[MapEntity]` et ses options
+- [06-profiler-et-cache-metadata.md](documentation/06-profiler-et-cache-metadata.md) — data collectors, `MetadataWarmer`/`MetadataClearer`
+- [07-configuration-dynamique-et-serializer.md](documentation/07-configuration-dynamique-et-serializer.md) — `ConfigurationResolverInterface`, bridge `symfony/serializer`
+
 ## 🎯 Concepts clés
 
-Voir le [README.md](README.md) pour le détail (config YAML, attributs `#[Schema\Table]`/`#[Schema\Column]`, User Provider, `UniqueEntity`, Value Resolver `#[MapEntity]`).
+Le [README.md](README.md) et [`documentation/`](documentation/README.md) sont la référence détaillée (config YAML, attributs `#[Schema\Table]`/`#[Schema\Column]`, User Provider, `UniqueEntity`, Value Resolver `#[MapEntity]`).
 
 - **Déclaration d'entité** : via attributs PHP (`CCMBenchmark\TingBundle\Schema\Table` et `Schema\Column`), plus besoin de config YAML par défaut.
 - **User Provider** : provider `ting` enregistré automatiquement, utilisable dans `security.providers`.
