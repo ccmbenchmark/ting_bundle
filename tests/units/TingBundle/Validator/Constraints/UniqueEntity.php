@@ -25,6 +25,7 @@
 namespace tests\units\CCMBenchmark\TingBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 
 class UniqueEntity extends \atoum
 {
@@ -49,6 +50,49 @@ class UniqueEntity extends \atoum
             ->then
                 ->array($mockUniqueEntity->getRequiredOptions())
                     ->isIdenticalTo(['fields', 'repository'])
+        ;
+    }
+
+    public function testNamedArguments()
+    {
+        $this
+            ->if($constraint = new \CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity(
+                fields: ['email'],
+                repository: 'App\Repository\UserRepository',
+                identityFields: ['id'],
+                message: 'Already used',
+                groups: ['signup'],
+            ))
+            ->then
+                ->array($constraint->fields)->isIdenticalTo(['email'])
+                ->string($constraint->repository)->isIdenticalTo('App\Repository\UserRepository')
+                ->array($constraint->identityFields)->isIdenticalTo(['id'])
+                ->string($constraint->message)->isIdenticalTo('Already used')
+                ->array($constraint->groups)->isIdenticalTo(['signup'])
+        ;
+    }
+
+    public function testLegacyOptionsArray()
+    {
+        $this
+            ->if($constraint = new \CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity([
+                'fields' => ['email'],
+                'repository' => 'App\Repository\UserRepository',
+            ]))
+            ->then
+                ->array($constraint->fields)->isIdenticalTo(['email'])
+                ->string($constraint->repository)->isIdenticalTo('App\Repository\UserRepository')
+                ->array($constraint->identityFields)->isEmpty()
+                ->string($constraint->message)->isIdenticalTo('Another entity exists for this data: {{ data }}')
+                ->array($constraint->groups)->isIdenticalTo([Constraint::DEFAULT_GROUP])
+        ;
+    }
+
+    public function testMissingRequiredOptionsThrow()
+    {
+        $this
+            ->exception(fn () => new \CCMBenchmark\TingBundle\Validator\Constraints\UniqueEntity(fields: ['email']))
+                ->isInstanceOf(MissingOptionsException::class)
         ;
     }
 }

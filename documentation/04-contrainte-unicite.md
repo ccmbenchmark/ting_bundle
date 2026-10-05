@@ -11,6 +11,8 @@ Si vous utilisez `symfony/validator`, la contrainte `CCMBenchmark\TingBundle\Val
 | `identityFields` | non | propriété(s) identifiant l'entité elle-même (voir plus bas) |
 | `message` | non | message par défaut : `Another entity exists for this data: {{ data }}` |
 
+Les options se passent en arguments nommés. L'ancienne forme en tableau (`options: ['repository' => ..., 'fields' => [...]]`) reste acceptée, Symfony 8 compris.
+
 ## Exemple : unicité d'un email à la création
 
 ```php
@@ -27,7 +29,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Table(name: 'users', connection: 'main', database: '%env(DATABASE_DB_NAME)%', repository: UserRepository::class)]
-#[UniqueEntity(options: ['repository' => UserRepository::class, 'fields' => ['email']], groups: ['create'])]
+#[UniqueEntity(fields: ['email'], repository: UserRepository::class, groups: ['create'])]
 class User implements UserInterface, NotifyPropertyInterface
 {
     #[Column(autoIncrement: true, primary: true)]

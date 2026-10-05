@@ -10,7 +10,7 @@ Bundle Symfony pour [Ting](https://gitlab.ccmbg.com/core/ting), le DataMapper PH
 
 **Stack technique :**
 - PHP >=8.1
-- Symfony ^4.4 || ^5.0 || ^6.0 || ^7.0 (validator, http-kernel, dependency-injection, config, stopwatch)
+- Symfony ^4.4 || ^5.0 || ^6.0 || ^7.0 || ^8.0 (validator, http-kernel, dependency-injection, config, stopwatch)
 - Dépend de `ccmbenchmark/ting` (^3.11)
 - Tests unitaires : [atoum](https://atoum.org/)
 
@@ -77,7 +77,7 @@ composer dump-autoload
 
 ## 🎓 Bonnes pratiques
 
-- **Compatibilité multi-Symfony** : le bundle supporte Symfony 4.4 à 7.x — vérifier la compatibilité des nouvelles fonctionnalités sur toutes les versions supportées (cf. le pattern `class_exists`/`interface_exists` dans `.atoum.php` pour exclure certains tests).
+- **Compatibilité multi-Symfony** : le bundle supporte Symfony 4.4 à 8.x — vérifier la compatibilité des nouvelles fonctionnalités sur toutes les versions supportées (cf. le pattern `class_exists`/`interface_exists` dans `.atoum.php` pour exclure certains tests).
 - **Code style** : PSR-2/PSR-12.
 
 ## Git
