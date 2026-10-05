@@ -25,7 +25,7 @@
 namespace CCMBenchmark\TingBundle\Repository;
 
 use CCMBenchmark\TingBundle\ConfigurationResolver\ConfigurationResolverInterface;
-use Symfony\Component\HttpKernel\Config\FileLocator;
+use Symfony\Component\Config\FileLocatorInterface;
 
 class RepositoryFactory extends \CCMBenchmark\Ting\Repository\RepositoryFactory
 {
@@ -38,14 +38,14 @@ class RepositoryFactory extends \CCMBenchmark\Ting\Repository\RepositoryFactory
      * @param string $cacheDir
      * @param string $cacheFile
      * @param array $repositories
-     * @param FileLocator $fileLocator
+     * @param FileLocatorInterface $fileLocator
      * @param ConfigurationResolverInterface|null $configurationResolver
      */
     public function loadMetadata(
         $cacheDir,
         $cacheFile,
         array $repositories,
-        FileLocator $fileLocator,
+        FileLocatorInterface $fileLocator,
         ?ConfigurationResolverInterface $configurationResolver = null
     ) {
         if ($this->metadataLoaded === true) {
