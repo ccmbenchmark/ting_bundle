@@ -1,3 +1,6 @@
+4.1.1 (2026-10-05):
+    * Fix Symfony 8.1: RepositoryFactory and MetadataWarmer accept any FileLocatorInterface. Symfony 8.1 registers file_locator as DependencyInjection\Kernel\FileLocator, which the HttpKernel\Config\FileLocator type rejected when the container was compiled
+
 4.1.0 (2026-10-05):
     * Support Symfony 8: symfony/* requirements accept ^8.0 (needs ccmbenchmark/ting 4.1, resolved by Composer)
     * Services are declared in PHP (Resources/config/services.php): Symfony 8 no longer loads XML service files

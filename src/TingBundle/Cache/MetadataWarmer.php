@@ -26,7 +26,7 @@ namespace CCMBenchmark\TingBundle\Cache;
 
 use CCMBenchmark\Ting\MetadataRepository;
 use CCMBenchmark\Ting\Repository\MetadataCacheGenerator;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class MetadataWarmer implements CacheWarmerInterface
@@ -37,7 +37,7 @@ class MetadataWarmer implements CacheWarmerInterface
     protected $metadataRepository;
 
     /**
-     * @var FileLocator
+     * @var FileLocatorInterface
      */
     protected $fileLocator;
 
@@ -55,13 +55,13 @@ class MetadataWarmer implements CacheWarmerInterface
      * MetadataWarmer constructor.
      *
      * @param MetadataRepository $metadataRepository
-     * @param FileLocator        $fileLocator
+     * @param FileLocatorInterface $fileLocator
      * @param array              $repositories
      * @param string             $cacheFile
      */
     public function __construct(
         MetadataRepository $metadataRepository,
-        FileLocator $fileLocator,
+        FileLocatorInterface $fileLocator,
         array $repositories,
         $cacheFile
     ) {
