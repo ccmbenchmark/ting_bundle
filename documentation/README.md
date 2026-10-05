@@ -1,6 +1,6 @@
 # Documentation Ting Bundle
 
-`ting_bundle` est le bundle Symfony pour [Ting](https://gitlab.ccmbg.com/core/ting), le datamapper PHP maison de CCM Benchmark. Il fournit la configuration, l'injection de dépendances et les intégrations Symfony (User Provider, Value Resolver, Validator, Profiler...) nécessaires pour utiliser Ting dans une application Symfony (4.4 à 7.x).
+`ting_bundle` est le bundle Symfony pour [Ting](https://gitlab.ccmbg.com/core/ting), le datamapper PHP maison de CCM Benchmark. Il fournit la configuration, l'injection de dépendances et les intégrations Symfony (User Provider, Value Resolver, Validator, Profiler...) nécessaires pour utiliser Ting dans une application Symfony (4.4 à 8.x).
 
 Cette documentation découpe par sujet le contenu du [README.md](../README.md) du dépôt, en l'enrichissant de détails tirés directement du code source (`src/TingBundle/`) — voir aussi [COREPHP-744](https://gitlab.ccmbg.com/core/ting).
 
@@ -16,4 +16,4 @@ Cette documentation découpe par sujet le contenu du [README.md](../README.md) d
 
 ## Versions concernées
 
-Décrit l'API du bundle sur la branche `master` (dépend de `ccmbenchmark/ting` ^4.0, Symfony 4.4 à 7.x). Voir aussi la [documentation de Ting](https://gitlab.ccmbg.com/core/ting/-/tree/master/documentation) pour les concepts sous-jacents (Repository, Metadata, UnitOfWork, Hydrateurs...).
+Décrit l'API du bundle sur la branche `master` (dépend de `ccmbenchmark/ting` ^4.0, Symfony 4.4 à 8.x). Voir aussi la [documentation de Ting](https://gitlab.ccmbg.com/core/ting/-/tree/master/documentation) pour les concepts sous-jacents (Repository, Metadata, UnitOfWork, Hydrateurs...).

@@ -1,3 +1,11 @@
+4.1.0 (2026-10-05):
+    * Support Symfony 8: symfony/* requirements accept ^8.0 (needs ccmbenchmark/ting 4.1, resolved by Composer)
+    * Services are declared in PHP (Resources/config/services.php): Symfony 8 no longer loads XML service files
+    * TingExtension extends DependencyInjection's Extension instead of HttpKernel's, removed in Symfony 8
+    * UniqueEntity accepts named arguments (#[UniqueEntity(fields: [...], repository: ...)]); the options array still works. Symfony 8 ignores the options array of the base Constraint, which left fields and repository empty
+    * Fix SymfonySerializer service: its argument is a reference to the Symfony serializer (null when absent), it was an empty string
+    * Data collectors and MetadataClearer declare the return types required by Symfony 8
+
 4.0.0 (2026-09-25):
     * Require ccmbenchmark/ting ^4.0, distributed from the GitLab core registry
 
