@@ -33,6 +33,10 @@ jobs:
           extensions: bcmath, bz2, gettext, mbstring, memcached, mcrypt, mysqli, opcache, pdo_mysql, zip, pdo, intl, json, pdo_pgsql, pgsql, session, simplexml, xml
           tools: "composer:${{ matrix.composer }}, pecl"
 
+      # Le registre Composer GitLab de CCM n'est pas joignable depuis GitHub : Ting vient de Packagist.
+      - name: Use Packagist only
+        run: composer config --unset repositories.gitlab.ccmbg.com/core
+
       - name: "Install ${{ matrix.deps }} deps with composer"
         uses: "ramsey/composer-install@v2"
         with:
