@@ -42,12 +42,14 @@
             <call method="setDatabaseOptions">
                 <argument>%ting.database_options%</argument>
             </call>
+            <tag name="kernel.reset" method="reset" />
         </service>
 
         <service id="ting.unitofwork" class="CCMBenchmark\Ting\UnitOfWork" public="true">
             <argument type="service" id="ting.connectionpool" />
             <argument type="service" id="ting.metadatarepository" />
             <argument type="service" id="ting.queryfactory" />
+            <tag name="kernel.reset" method="reset" />
         </service>
 
         <service id="ting.hydrator" class="CCMBenchmark\Ting\Repository\Hydrator" shared="false" public="true">

@@ -73,6 +73,7 @@ class TingExtension extends Extension
             $definition->addArgument(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
             $definition->addArgument(new Reference('debug.stopwatch', ContainerInterface::NULL_ON_INVALID_REFERENCE));
             $definition->addTag('monolog.logger', ['channel' => 'ting']);
+            $definition->addTag('kernel.reset', ['method' => 'reset']);
             $container->setDefinition('ting.driverlogger', $definition);
 
             $reference = new Reference('ting.driverlogger');
@@ -89,6 +90,7 @@ class TingExtension extends Extension
             $definition->addArgument(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
             $definition->addArgument(new Reference('debug.stopwatch', ContainerInterface::NULL_ON_INVALID_REFERENCE));
             $definition->addTag('monolog.logger', ['channel' => 'ting']);
+            $definition->addTag('kernel.reset', ['method' => 'reset']);
             $container->setDefinition('ting.cachelogger', $definition);
 
             $reference = new Reference('ting.cachelogger');
